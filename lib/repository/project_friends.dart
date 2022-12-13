@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class ProjectFriendsRepository{
   final List<Friend> friends=[
     Friend("Semih", "Yağcı"),
