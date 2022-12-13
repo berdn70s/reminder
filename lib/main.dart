@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remainder/repository/project_friends.dart';
+import 'package:remainder/repository/project_repository.dart';
+import 'package:remainder/repository/tasks_repository.dart';
 // ignore_for_file: prefer_const_constructors
 
 void main() {
   runApp(const MyApp());
 }
 
-class Tasks {
-  double? date;
-  String? exp;
-
-  Tasks(double this.date, String this.exp);
-
-
-  void createTask(Tasks newTask, date, exp) {
-    newTask.date = date;
-    newTask.exp = exp;
-  }
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -42,7 +33,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Tasks task1 = Tasks(23.23, 'Do your SE323 homework ASAP');
+  TasksRepository tasksRepository= TasksRepository();
+  ProjectFriendsRepository projectFriendsRepository= ProjectFriendsRepository();
+  ProjectRepository projectRepository= ProjectRepository();
+
   bool isTasksDisplay = true;
   final _taskController = TextEditingController();
 

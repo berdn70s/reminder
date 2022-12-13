@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:lottie/lottie.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:remainder/repository/project_friends.dart';
+import 'package:remainder/repository/project_repository.dart';
+import 'package:remainder/repository/tasks_repository.dart';
 // ignore_for_file: prefer_const_constructors
 
 void main() {
@@ -33,17 +36,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> myTaskList = List.filled(10, growable: true, '');
-  bool _speechEnabled = false;
-  String _lastWords = '';
-
-  var isAnimDisplay = false;
-  var isListDisplay = true;
-  final _textController = TextEditingController();
-
-  void initState() {
-    super.initState();
-  }
+  ProjectRepository projectRepository = ProjectRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +63,151 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.black,
               )
             ],
+          ),
+        ),
+        body: Column(children: [
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                child: ListView.builder(
+                    itemCount: projectRepository.projects.length,
+                    itemBuilder: ((context, index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor: Colors.grey),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TaskPage()));
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      style: GoogleFonts.nunito(fontSize: 20),
+                                      "${projectRepository.projects[index].projectName}"),
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProjectPersonViewScreen()));
+                                      },
+                                      icon: Icon(Icons.person_pin))
+                                ],
+                              ),
+                            ),
+                          ]),
+                        ))),
+              ),
+            ),
+          ),
+        ]));
+  }
+}
+
+class ProjectPersonViewScreen extends StatefulWidget {
+  const ProjectPersonViewScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProjectPersonViewScreen> createState() => _ProjectPersonViewScreenState();
+}
+
+class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
+  ProjectRepository projectRepository = ProjectRepository();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.black54,
+        title: Padding(
+          padding: EdgeInsets.only(right: 45),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.timelapse, color: Colors.black),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                "Remainder",
+                style: GoogleFonts.barlow(color: Colors.black),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Icons.timelapse,
+                color: Colors.black,
+              )
+            ],
+          ),
+        ),
+      ),
+      body: Text("Ali,Ahmet,Veli")
+    );
+  }
+}
+
+class TaskPage extends StatefulWidget {
+  const TaskPage({Key? key}) : super(key: key);
+
+  @override
+  State<TaskPage> createState() => _TaskPageState();
+}
+
+class _TaskPageState extends State<TaskPage> {
+  TasksRepository tasksRepository = TasksRepository();
+  ProjectFriendsRepository projectFriendsRepository = ProjectFriendsRepository();
+  ProjectRepository projectRepository = ProjectRepository();
+  bool _speechEnabled = false;
+  String _lastWords = '';
+
+  var isAnimDisplay = false;
+  var isListDisplay = true;
+  final _textController = TextEditingController();
+
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.black54,
+          title: Padding(
+            padding: EdgeInsets.only(right: 45),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.timelapse, color: Colors.black),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Remainder",
+                  style: GoogleFonts.barlow(color: Colors.black),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Icon(
+                  Icons.timelapse,
+                  color: Colors.black,
+                )
+              ],
+            ),
           ),
         ),
         body: Center(
@@ -152,9 +290,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                     shadows: [Shadow(blurRadius: 20.2)]),
                                 onPressed: () {
                                   setState(() {
-                                    myTaskList
-                                        .add(_textController.text.toString());
-                                    print(myTaskList.length);
+                                    tasksRepository.task.add(Task(
+                                        _textController.text.toString(),
+                                        Friend("Semih", "Yağcı"),
+                                        DateTime.now()));
                                   });
                                 }),
                             border: OutlineInputBorder()),
@@ -167,9 +306,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               shadows: [Shadow(blurRadius: 20.2)]),
                           onPressed: () {
                             setState(() {
-                              if (myTaskList.isNotEmpty) {
-                                myTaskList.removeLast();
-                                print(myTaskList.length);
+                              if (tasksRepository.task.isNotEmpty) {
+                                tasksRepository.task.removeLast();
                               }
                             });
                           })
@@ -179,8 +317,8 @@ class _MyHomePageState extends State<MyHomePage> {
               if (isAnimDisplay)
                 Expanded(
                     child: Center(
-                  child: Lottie.asset(
-                      '/Users/berdn90s/AndroidStudioProjects/remainder/assets/6286-reminder-loop.json'),
+                  child: Lottie.network(
+                      "https://assets8.lottiefiles.com/packages/lf20_W4M8Pi.json"),
                 )),
               if (isListDisplay)
                 Expanded(
@@ -188,7 +326,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 22.0),
                       child: ListView.builder(
-                          itemCount: myTaskList.length,
+                          itemCount: tasksRepository.task.length,
                           itemBuilder: ((context, index) => ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.black,
@@ -198,12 +336,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              projectScreen()));
+                                              ProjectScreen()));
                                 },
                                 child: Center(
                                   child: Text(
                                       style: GoogleFonts.nunito(fontSize: 20),
-                                      myTaskList[index]),
+                                      tasksRepository.task[index].content),
                                 ),
                               ))),
                     ),
@@ -224,8 +362,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class projectScreen extends StatelessWidget {
-  const projectScreen({Key? key}) : super(key: key);
+class ProjectScreen extends StatelessWidget {
+  const ProjectScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
