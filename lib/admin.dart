@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,20 +26,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  ProjectRepository projectRepository = ProjectRepository();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final projectRepository = ref.watch(projectProvider);
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -52,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 10,
               ),
               Text(
-                widget.title,
+                title,
                 style: GoogleFonts.barlow(color: Colors.black),
               ),
               const SizedBox(
@@ -126,61 +120,62 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.black54,
-        title: Padding(
-          padding: EdgeInsets.only(right: 45),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.timelapse, color: Colors.black),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Remainder",
-                style: GoogleFonts.barlow(color: Colors.black),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              const Icon(
-                Icons.timelapse,
-                color: Colors.black,
-              )
-            ],
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.black54,
+          title: Padding(
+            padding: EdgeInsets.only(right: 45),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.timelapse, color: Colors.black),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Remainder",
+                  style: GoogleFonts.barlow(color: Colors.black),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Icon(
+                  Icons.timelapse,
+                  color: Colors.black,
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      body: Column(children: [
-             Expanded(
-             child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                    child: ListView.builder(
-                      itemCount: widget.includedPeople.length,
-                        itemBuilder: ((context, index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              Text(
-                    style: GoogleFonts.nunito(fontSize: 20),
-                     "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
-                                 )
-                               ]
-                            )
-                    )
-    )
-    )
-    )
-    )
-    )
-    ]
-    )
+        body: Column(children: [
+          Expanded(
+              child: Center(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                      child: ListView.builder(
+                          itemCount: widget.includedPeople.length,
+                          itemBuilder: ((context, index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(children: [
+                                Text(
+                                  style: GoogleFonts.nunito(fontSize: 20),
+                                  "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
+                                )
+                              ]
+                              )
+                          )
+                          )
+                      )
+                  )
+              )
+          )
+        ]
+        )
 
     );
   }
 }
+
 
 class TaskPage extends StatefulWidget {
   final List<Task> tasks;
@@ -198,6 +193,12 @@ class _TaskPageState extends State<TaskPage> {
 
   void initState() {
     super.initState();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -374,14 +375,6 @@ class _TaskPageState extends State<TaskPage> {
         )));
   }
 
-  String displayList(List l, int j) {
-    for (int i = 0; i < l.length; i++) {
-      if (i == j) {
-        return '${l.elementAt(i)}';
-      }
-    }
-    return '';
-  }
 }
 
 class ProjectScreen extends StatelessWidget {

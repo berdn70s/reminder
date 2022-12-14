@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:remainder/repository/project_friends.dart';
 import 'package:remainder/repository/tasks_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProjectRepository{
+class ProjectRepository extends ChangeNotifier{
   final List<Project> projects=[
     Project("Project1",2,[
       Task("Functional Req1",Friend("Semih","Yağcı") ,DateTime.now()),
@@ -26,6 +27,9 @@ class ProjectRepository{
 
 
 }
+final projectProvider=ChangeNotifierProvider((ref){
+  return ProjectRepository();
+});
 
 
 class Project {
