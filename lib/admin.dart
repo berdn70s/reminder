@@ -253,22 +253,7 @@ class _TaskPageState extends State<TaskPage> {
                           isListDisplay = !isListDisplay;
                         });
                       }),
-                  AnimatedButton(
-                      width: 140,
-                      height: 40,
-                      selectedTextColor: Colors.black87,
-                      selectedBackgroundColor: Colors.black12,
-                      isReverse: true,
-                      transitionType: TransitionType.BOTTOM_TO_TOP,
-                      borderRadius: 60,
-                      borderWidth: 2,
-                      text: 'ADD A VOICE',
-                      textStyle: GoogleFonts.nunito(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w300),
-                      onPress: () {}),
+
                 ],
               ),
               if (isListDisplay)
