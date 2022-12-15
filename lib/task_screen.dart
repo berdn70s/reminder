@@ -212,7 +212,7 @@ class TaskDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PROJECTS'),
+        title: Text('Task Details'),
       ),
       body: Center(
         child: ElevatedButton(

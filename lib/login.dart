@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remainder/register.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -139,11 +140,14 @@ class _LoginState extends State<Login> {
                     )),
               ),
             ),
-            const TextButton(
-                onPressed: null
-                //Navigated to register page.
-                ,
-                child: Text('Create an Account',
+            TextButton(
+                onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (context) => const Register()));
+                },
+                child: const Text('Create an Account',
                     style: TextStyle(color: Colors.grey, fontSize: 15)))
           ],
         ),
