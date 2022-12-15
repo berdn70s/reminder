@@ -7,7 +7,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:remainder/repository/project_friends.dart';
 import 'package:remainder/repository/project_repository.dart';
 import 'package:remainder/repository/tasks_repository.dart';
-// ignore_for_file: prefer_const_constructors
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 void main() {
   runApp(const MyApp());
