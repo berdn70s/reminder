@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProjectFriendsRepository extends ChangeNotifier{
   final List<Friend> friends=[
-    Friend("Semih", "Yağcı"),
-    Friend("Ahmet", "Yalın"),
-    Friend("Mehmet", "Çakıcı")
+    Friend("Semih", "Yagci"),
+    Friend("Ahmet", "Yalin"),
+    Friend("Mehmet", "Cakici")
   ];
 
   void addFriend(Friend friend){
