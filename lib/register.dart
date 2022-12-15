@@ -55,7 +55,7 @@ class _RegisterState extends State<Register> {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.only(
-                bottom: 35,
+                bottom: 36,
               ),
               child: Text(
                 "Sign UP",
