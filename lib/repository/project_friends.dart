@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProjectFriendsRepository extends ChangeNotifier{
-  final List<Friend> friends=[
+  static final List<Friend> friends=[
     Friend("Semih", "Yagci"),
     Friend("Ahmet", "Yalin"),
     Friend("Mehmet", "Cakici")
