@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/repository/project_friends.dart';
+import 'package:remainder/repository/project_repository.dart';
+import 'package:remainder/task_screen.dart';
 
 class ProjectPersonViewScreen extends StatefulWidget {
   final List<Friend> includedPeople;
@@ -19,7 +22,7 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
           elevation: 0,
           backgroundColor: Colors.black54,
           title: Padding(
-            padding: EdgeInsets.only(right: 45),
+            padding: const EdgeInsets.only(right: 45),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -68,5 +71,86 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
         )
 
     );
+  }
+}
+
+class ProjectsScreen extends ConsumerWidget {
+  const ProjectsScreen({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context,WidgetRef ref) {
+    final projectRepository = ref.watch(projectProvider);
+    return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.black54,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.timelapse, color: Colors.black),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                title,
+                style: GoogleFonts.barlow(color: Colors.black),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Icons.timelapse,
+                color: Colors.black,
+              )
+            ],
+          ),
+        ),
+        body: Column(children: [
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                child: ListView.builder(
+                    itemCount: projectRepository.projects.length,
+                    itemBuilder: ((context, index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.black,
+                              backgroundColor: Colors.grey),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TaskPage(projectRepository.projects[index].tasks)));
+                          },
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                  style: GoogleFonts.nunito(fontSize: 20),
+                                  projectRepository.projects[index].projectName),
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProjectPersonViewScreen(projectRepository.projects[index].includedPeople)));
+                                  },
+                                  icon: const Icon(Icons.person_pin))
+                            ],
+                          ),
+                        ),
+                      ]),
+                    ))),
+              ),
+            ),
+          ),
+        ]));
   }
 }
