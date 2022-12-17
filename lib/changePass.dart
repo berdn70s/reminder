@@ -30,7 +30,8 @@ class _ChangePasswordState extends State<ChangePassword> {
     } on FirebaseAuthException catch (error) {
       if (error.code == 'user-not-found') {
         Fluttertoast.showToast(
-            msg: 'There is no user responding to this e-mail.', gravity: ToastGravity.TOP);
+            msg: 'There is no user responding to this e-mail.',
+            gravity: ToastGravity.TOP);
       } else {
         Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
       }
