@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/repository/project_friends.dart';
 import 'package:remainder/repository/project_repository.dart';
 import 'package:remainder/task_screen.dart';
-
 class ProjectPersonViewScreen extends StatefulWidget {
 
   final List<Friend> includedPeople;
@@ -49,22 +48,29 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
             ),
           ),
         ),
-        body: Column(children: [
-          Expanded(
-              child: Center(
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                      child: ListView.builder(
-                          itemCount: widget.includedPeople.length,
-                          itemBuilder: ((context, index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(children: [
-                                Text(
-                                  style: GoogleFonts.nunito(fontSize: 20),
-                                  "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
-                                )
-                              ])))))))
-        ]));
+        body: Container(decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.black54, Colors.redAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+        ),
+          child: Column(children: [
+            Expanded(
+                child: Center(
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                        child: ListView.builder(
+                            itemCount: widget.includedPeople.length,
+                            itemBuilder: ((context, index) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(children: [
+                                  Text(
+                                    style: GoogleFonts.nunito(fontSize: 20),
+                                    "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
+                                  )
+                                ])))))))
+          ]),
+        ));
   }
 }
 
@@ -111,56 +117,63 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             ],
           ),
         ),
-        body: Column(children: [
-          Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                child: ListView.builder(
-                    itemCount: projectRepository.projects.length,
-                    itemBuilder: ((context, index) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.grey),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TaskPage(projectRepository.projects[index].tasks)));
-                          },
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                  style: GoogleFonts.nunito(fontSize: 20),
-                                  projectRepository.projects[index].projectName),
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProjectPersonViewScreen(projectRepository.projects[index].includedPeople)));
-                                  },
-                                  icon: const Icon(Icons.person_pin))
-                            ],
+        body: Container(decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.black54, Colors.redAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+        ),
+          child: Column(children: [
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                  child: ListView.builder(
+                      itemCount: projectRepository.projects.length,
+                      itemBuilder: ((context, index) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor: Colors.grey),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TaskPage(projectRepository.projects[index].tasks)));
+                            },
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    style: GoogleFonts.nunito(fontSize: 20),
+                                    projectRepository.projects[index].projectName),
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProjectPersonViewScreen(projectRepository.projects[index].includedPeople)));
+                                    },
+                                    icon: const Icon(Icons.person_pin))
+                              ],
+                            ),
                           ),
-                        ),
-                      ]),
-                    ))),
+                        ]),
+                      ))),
+                ),
               ),
             ),
+            TextField(
+              controller: controller,
+            ),
+            ElevatedButton(
+                onPressed: addProject, child: const Text('Add project'))
+          ]
           ),
-          TextField(
-            controller: controller,
-          ),
-          ElevatedButton(
-              onPressed: addProject, child: const Text('Add project'))
-        ]
         )
     );
   }
