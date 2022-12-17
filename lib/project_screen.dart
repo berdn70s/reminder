@@ -116,7 +116,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                padding: const EdgeInsets.symmetric(horizontal: 21.0),
                 child: StreamBuilder(
                     stream: db.collection('projects').snapshots(),
                     builder: (context, snapshot) {
