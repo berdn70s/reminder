@@ -7,7 +7,6 @@ import 'package:remainder/repository/project_repository.dart';
 import 'package:remainder/task_screen.dart';
 
 class ProjectPersonViewScreen extends StatefulWidget {
-
   final List<Friend> includedPeople;
 
   const ProjectPersonViewScreen(this.includedPeople, {Key? key})
@@ -76,14 +75,16 @@ class ProjectsScreen extends StatefulWidget {
 }
 
 class _ProjectsScreenState extends State<ProjectsScreen> {
+  FirebaseFirestore db = FirebaseFirestore.instance;
   final TextEditingController controller = TextEditingController();
   ProjectRepository projectRepository = ProjectRepository();
 
   @override
   void dispose() {
-   controller.dispose();
+    controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,42 +117,44 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                child: ListView.builder(
-                    itemCount: projectRepository.projects.length,
-                    itemBuilder: ((context, index) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.grey),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TaskPage(projectRepository.projects[index].tasks)));
-                          },
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                  style: GoogleFonts.nunito(fontSize: 20),
-                                  projectRepository.projects[index].projectName),
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProjectPersonViewScreen(projectRepository.projects[index].includedPeople)));
-                                  },
-                                  icon: const Icon(Icons.person_pin))
-                            ],
-                          ),
-                        ),
-                      ]),
-                    ))),
+                child: StreamBuilder(
+                    stream: db.collection('projects').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: ((context, index) {
+                          var documentSnapShot= snapshot.data!.docs[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: Colors.grey),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Text('data')));
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        style: GoogleFonts.nunito(fontSize: 20),
+                                        documentSnapShot['whotodo'].toString()),
+                                  ],
+                                ),
+                              ),
+                            ]),
+                          );
+                        }),
+                      );
+                    }),
               ),
             ),
           ),
@@ -160,22 +163,15 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
           ),
           ElevatedButton(
               onPressed: addProject, child: const Text('Add project'))
-        ]
-        )
-    );
+        ]));
   }
+
   addProject() async {
-    CollectionReference project = FirebaseFirestore.instance.collection(controller.text);
-    return project
-        .add({
-      'taskName': 'fullName',
-      'desc': 'i dont know',
-    })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+    final docUser = db.collection('projects').doc(controller.text);
+    final tasks = docUser.collection('tasks');
+    final task = {'name': 'task1', 'desc': 'blabalbaba', 'whotodo': 'mehmet'};
+    final project = {'whotodo': 'hamza'};
+    await docUser.set(project);
+    await tasks.add(task);
   }
 }
-
-
-
-
