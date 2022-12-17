@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProjectFriendsRepository extends ChangeNotifier{
+
+class ProjectFriendsRepository{
   static final List<Friend> friends=[
     Friend("Semih", "Yagci"),
     Friend("Ahmet", "Yalin"),
@@ -10,13 +9,8 @@ class ProjectFriendsRepository extends ChangeNotifier{
 
   void addFriend(Friend friend){
     friends.add(friend);
-    notifyListeners();
   }
 }
-
-final friendsProvider = ChangeNotifierProvider((ref) {
-  return ProjectFriendsRepository();
-});
 
 class Friend {
   String firstName;

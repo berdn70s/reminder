@@ -14,7 +14,6 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
-
   var isAnimDisplay = false;
   var isListDisplay = true;
   final _textController = TextEditingController();
@@ -34,13 +33,13 @@ class _TaskPageState extends State<TaskPage> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.chevron_left),
+            icon: const Icon(Icons.chevron_left),
             onPressed: () => Navigator.pop(context,widget.tasks),
           ),
           elevation: 0,
           backgroundColor: Colors.black54,
           title: Padding(
-            padding: EdgeInsets.only(right: 45),
+            padding: const EdgeInsets.only(right: 45),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -49,7 +48,7 @@ class _TaskPageState extends State<TaskPage> {
                   width: 10,
                 ),
                 Text(
-                  "Remainder",
+                  "REMAINDER",
                   style: GoogleFonts.barlow(color: Colors.black),
                 ),
                 const SizedBox(
@@ -135,8 +134,8 @@ class _TaskPageState extends State<TaskPage> {
                                     onPressed: () {
                                       _textController.clear();
                                     },
-                                    icon: Icon(Icons.delete_forever_outlined)),
-                                label: Text('Task'),
+                                    icon: const Icon(Icons.delete_forever_outlined)),
+                                label: const Text('Task'),
                                 hintText: 'What u up to?',
                                 icon: IconButton(
                                     icon: const Icon(Icons.task_alt_outlined,
@@ -147,11 +146,11 @@ class _TaskPageState extends State<TaskPage> {
                                       setState(() {
                                         widget.tasks.add(Task(
                                             _textController.text.toString(),
-                                            Friend("Semih", "Yağcı"),
+                                            Friend("Semih", "Yagci"),
                                             DateTime.now()));
                                       });
                                     }),
-                                border: OutlineInputBorder()),
+                                border: const OutlineInputBorder()),
                             controller: _textController,
                           ),
                           IconButton(
@@ -212,7 +211,7 @@ class TaskDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Details'),
+        title: const Text('Task Details'),
       ),
       body: Center(
         child: ElevatedButton(
@@ -220,7 +219,7 @@ class TaskDetailsScreen extends StatelessWidget {
             Navigator.pop(context,
                 MaterialPageRoute(builder: (context) => build(context)));
           },
-          child: Icon(Icons.arrow_back_ios),
+          child: const Icon(Icons.arrow_back_ios),
         ),
       ),
     );
