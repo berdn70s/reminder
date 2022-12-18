@@ -118,43 +118,20 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 21.0),
                 child: StreamBuilder(
-                    stream: db.collection('projects').snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container();
-                      }
-                      return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: ((context, index) {
-                          var documentSnapShot= snapshot.data!.docs[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: Colors.grey),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Text('data')));
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        style: GoogleFonts.nunito(fontSize: 20),
-                                        documentSnapShot['whotodo'].toString()),
-                                  ],
-                                ),
-                              ),
-                            ]),
-                          );
-                        }),
-                      );
-                    }),
+                  stream: db.collection('projects').snapshots(),
+                  builder: (context,AsyncSnapshot snapshot){
+                    if(!snapshot.hasData){
+                      return const CircularProgressIndicator();
+                    }
+                    return ListView(
+                      children: snapshot.data.docs.map<Widget>((document){
+                        return Center(
+                          child: Text(document['projectname']),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -169,9 +146,15 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   addProject() async {
     final docUser = db.collection('projects').doc(controller.text);
     final tasks = docUser.collection('tasks');
-    final task = {'name': 'task1', 'desc': 'blabalbaba', 'whotodo': 'mehmet'};
-    final project = {'whotodo': 'hamza'};
+    final task = {
+      'name': 'task1',
+      'desc': 'blabalbaba',
+      'whotodo':FirebaseAuth.instance.currentUser!.email.toString(),};
+    final project = {
+      'projectname': controller.text,
+    };
     await docUser.set(project);
     await tasks.add(task);
   }
+
 }
