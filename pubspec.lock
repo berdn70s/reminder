@@ -282,6 +282,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  msh_checkbox:
+    dependency: "direct main"
+    description:
+      name: msh_checkbox
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   package_info:
     dependency: transitive
     description:
@@ -380,6 +387,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  roundcheckbox:
+    dependency: "direct main"
+    description:
+      name: roundcheckbox
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
   sky_engine:
     dependency: transitive
     description: flutter
