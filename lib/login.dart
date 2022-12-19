@@ -27,7 +27,7 @@ class _LoginState extends State<Login> {
   signIn() async {
     try{
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ProjectsScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProjectsScreen()));
     } on FirebaseAuthException catch (error){
       Fluttertoast.showToast(msg: error.message!,gravity: ToastGravity.TOP);
     }

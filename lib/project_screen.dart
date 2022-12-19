@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/repository/project_friends.dart';
 import 'package:remainder/repository/project_repository.dart';
 import 'package:remainder/task_screen.dart';
+
 class ProjectPersonViewScreen extends StatefulWidget {
   final List<Friend> includedPeople;
 
@@ -33,7 +34,7 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
                   width: 10,
                 ),
                 Text(
-                  "Remainder",
+                  "REMAINDER",
                   style: GoogleFonts.barlow(color: Colors.black),
                 ),
                 const SizedBox(
@@ -47,29 +48,22 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
             ),
           ),
         ),
-        body: Container(decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.black54, Colors.redAccent],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
-        ),
-          child: Column(children: [
-            Expanded(
-                child: Center(
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                        child: ListView.builder(
-                            itemCount: widget.includedPeople.length,
-                            itemBuilder: ((context, index) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(children: [
-                                  Text(
-                                    style: GoogleFonts.nunito(fontSize: 20),
-                                    "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
-                                  )
-                                ])))))))
-          ]),
-        ));
+        body: Column(children: [
+          Expanded(
+              child: Center(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                      child: ListView.builder(
+                          itemCount: widget.includedPeople.length,
+                          itemBuilder: ((context, index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(children: [
+                                Text(
+                                  style: GoogleFonts.nunito(fontSize: 20),
+                                  "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
+                                )
+                              ])))))))
+        ]));
   }
 }
 
@@ -93,6 +87,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> snapshots = db.collection('projects').snapshots();
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -105,7 +100,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 width: 10,
               ),
               Text(
-                FirebaseAuth.instance.currentUser!.displayName.toString(),
+                "REMAINDER",
                 style: GoogleFonts.barlow(color: Colors.black),
               ),
               const SizedBox(
@@ -118,68 +113,76 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             ],
           ),
         ),
+        body: Column(children: [
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 21.0),
+                child: StreamBuilder(//<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: snapshots,
+                  builder: (context, snapshot){
+                    if(!snapshot.hasData){
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                              child: ListView(
+                                children: snapshot.data?.docs.map<Widget>((document)
+                                {
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 5,top: 5),
+                                        child: ElevatedButton(style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.black,
+                                            backgroundColor: Colors.grey),
+                                          onPressed: () async{
+                                          final tasks= await document.reference.collection("tasks").get();
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return TaskPage(tasks.docs.map((e) => e.get('name')).toList());
+                                                    }));
 
-        body: Container(decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.black54, Colors.redAccent],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
-        ),
-          child: Column(children: [
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                  child: ListView.builder(
-                      itemCount: projectRepository.projects.length,
-                      itemBuilder: ((context, index) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                backgroundColor: Colors.grey),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TaskPage(projectRepository.projects[index].tasks)));
-                            },
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                    style: GoogleFonts.nunito(fontSize: 20),
-                                    projectRepository.projects[index].projectName),
-                                IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProjectPersonViewScreen(projectRepository.projects[index].includedPeople)));
-                                    },
-                                    icon: const Icon(Icons.person_pin))
-                              ],
+                                          }, child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(child: Text(document['projectname'])),
+                                              IconButton(
+                                                  onPressed: () {
+
+                                                  },
+                                                  icon: const Icon(Icons.person_pin))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                })?.toList() ?? [],
+                              ),
                             ),
                           ),
-                        ]),
-                      ))),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
-            TextField(
-              controller: controller,
-            ),
-            ElevatedButton(
-                onPressed: addProject, child: const Text('Add project'))
-          ]
           ),
-        )
-    );
-
-
+          TextField(
+            controller: controller,
+          ),
+          ElevatedButton(
+              onPressed: addProject, child: const Text('Add project'))
+        ]));
   }
 
   addProject() async {
@@ -189,11 +192,16 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       'name': 'task1',
       'desc': 'blabalbaba',
       'whotodo':FirebaseAuth.instance.currentUser!.email.toString(),};
+    final task2 = {
+      'name': 'task2',
+      'desc': 'blabalbaba',
+      'whotodo':FirebaseAuth.instance.currentUser!.email.toString(),};
     final project = {
       'projectname': controller.text,
     };
     await docUser.set(project);
     await tasks.add(task);
+    await tasks.add(task2);
   }
 
 }

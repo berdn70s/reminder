@@ -7,7 +7,7 @@ import 'repository/tasks_repository.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 
 class TaskPage extends StatefulWidget {
-  final List<Task> tasks;
+  final List<dynamic> tasks;
 
   const TaskPage(this.tasks, {Key? key}) : super(key: key);
 
@@ -36,40 +36,38 @@ class _TaskPageState extends State<TaskPage> {
   Future popUp() => showDialog(
       context: this.context,
       builder: (context) => AlertDialog(
-            title: Text('Task'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const TextField(
-                  autofocus: true,
-                  decoration:
-                      InputDecoration(hintText: 'Enter your description'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text('Is it done?'),
-                      RoundCheckBox(
-                        isChecked: isChecked,
-                        animationDuration: Duration(milliseconds: 600),
-                        checkedColor: Colors.black26,
-                        onTap: (selected) {
-                          setState(() {
-                            isChecked = !isChecked;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        title: Text('Task'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Task description"
             ),
-            actions: [
-              TextButton(onPressed: submit, child: Text('Submit')),
-            ],
-          ));
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text('Is it done?'),
+                  RoundCheckBox(
+                    isChecked: isChecked,
+                    animationDuration: Duration(milliseconds: 600),
+                    checkedColor: Colors.black26,
+                    onTap: (selected) {
+                      setState(() {
+                        isChecked = !isChecked;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: submit, child: Text('Submit')),
+        ],
+      ));
 
   @override
   Widget build(BuildContext context) {
@@ -107,107 +105,107 @@ class _TaskPageState extends State<TaskPage> {
         ),
         body: Center(
             child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.black54, Colors.redAccent],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
-          ),
-          child: Center(
-            child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  AnimatedButton(
-                      width: 140,
-                      height: 40,
-                      selectedTextColor: Colors.black87,
-                      selectedBackgroundColor: Colors.black12,
-                      isReverse: true,
-                      transitionType: TransitionType.BOTTOM_TO_TOP,
-                      borderRadius: 60,
-                      borderWidth: 2,
-                      text: 'ADD A TASK',
-                      textStyle: GoogleFonts.nunito(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w300),
-                      onPress: () {
-                        setState(() {
-                          isAnimDisplay = !isAnimDisplay;
-                          isTasksDisplay = !isTasksDisplay;
-                        });
-                      }),
-                ],
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.black54, Colors.redAccent],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter),
               ),
-              if (isTasksDisplay)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-                  child: Row(
+              child: Center(
+                child: Column(children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TextField(
-                        decoration: InputDecoration(
-                            constraints: const BoxConstraints(
-                                minHeight: 10,
-                                maxWidth: 320,
-                                maxHeight: 100,
-                                minWidth: 30),
-                            suffixIcon: IconButton(
-                                onPressed: () {
-                                  _textController.clear();
-                                },
-                                icon:
-                                    const Icon(Icons.delete_forever_outlined)),
-                            label: const Text('Task'),
-                            hintText: 'What u up to?',
-                            icon: IconButton(
-                                icon: const Icon(Icons.task_alt_outlined,
-                                    color: Colors.grey,
-                                    size: 30,
-                                    shadows: [Shadow(blurRadius: 20.2)]),
-                                onPressed: () {
-                                  setState(() {
-                                    widget.tasks.add(Task(
-                                        _textController.text.toString(),
-                                        Friend("Semih", "Yagci"),
-                                        DateTime.now()));
-                                  });
-                                }),
-                            border: const OutlineInputBorder()),
-                        controller: _textController,
-                      ),
-                      IconButton(
-                          icon: const Icon(Icons.highlight_off,
-                              color: Colors.grey,
-                              size: 30,
-                              shadows: [Shadow(blurRadius: 20.2)]),
-                          onPressed: () {
+                      AnimatedButton(
+                          width: 140,
+                          height: 40,
+                          selectedTextColor: Colors.black87,
+                          selectedBackgroundColor: Colors.black12,
+                          isReverse: true,
+                          transitionType: TransitionType.BOTTOM_TO_TOP,
+                          borderRadius: 60,
+                          borderWidth: 2,
+                          text: 'ADD A TASK',
+                          textStyle: GoogleFonts.nunito(
+                              fontSize: 16,
+                              letterSpacing: 1,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w300),
+                          onPress: () {
                             setState(() {
-                              if (widget.tasks.isNotEmpty) {
-                                widget.tasks.removeLast();
-                              }
+                              isAnimDisplay = !isAnimDisplay;
+                              isTasksDisplay = !isTasksDisplay;
                             });
-                          })
+                          }),
                     ],
                   ),
-                ),
-              if (isAnimDisplay)
-                Expanded(
-                    child: Center(
-                  child: Lottie.network(
-                      "https://assets8.lottiefiles.com/packages/lf20_W4M8Pi.json"),
-                )),
-              if (isTasksDisplay)
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                      child: ListView.builder(
-                          itemCount: widget.tasks.length,
-                          itemBuilder: ((context, index) => ElevatedButton(
+                  if (isTasksDisplay)
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                constraints: const BoxConstraints(
+                                    minHeight: 10,
+                                    maxWidth: 320,
+                                    maxHeight: 100,
+                                    minWidth: 30),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      _textController.clear();
+                                    },
+                                    icon:
+                                    const Icon(Icons.delete_forever_outlined)),
+                                label: const Text('Task'),
+                                hintText: 'What u up to?',
+                                icon: IconButton(
+                                    icon: const Icon(Icons.task_alt_outlined,
+                                        color: Colors.grey,
+                                        size: 30,
+                                        shadows: [Shadow(blurRadius: 20.2)]),
+                                    onPressed: () {
+                                      setState(() {
+                                        widget.tasks.add(Task(
+                                            _textController.text.toString(),
+                                            Friend("Semih", "Yagci"),
+                                            DateTime.now()));
+                                      });
+                                    }),
+                                border: const OutlineInputBorder()),
+                            controller: _textController,
+                          ),
+                          IconButton(
+                              icon: const Icon(Icons.highlight_off,
+                                  color: Colors.grey,
+                                  size: 30,
+                                  shadows: [Shadow(blurRadius: 20.2)]),
+                              onPressed: () {
+                                setState(() {
+                                  if (widget.tasks.isNotEmpty) {
+                                    widget.tasks.removeLast();
+                                  }
+                                });
+                              })
+                        ],
+                      ),
+                    ),
+                  if (isAnimDisplay)
+                    Expanded(
+                        child: Center(
+                          child: Lottie.network(
+                              "https://assets8.lottiefiles.com/packages/lf20_W4M8Pi.json"),
+                        )),
+                  if (isTasksDisplay)
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                          child: ListView.builder(
+                              itemCount: widget.tasks.length,
+                              itemBuilder: ((context, index) => ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.black,
                                     backgroundColor: Colors.grey),
@@ -216,16 +214,15 @@ class _TaskPageState extends State<TaskPage> {
                                 },
                                 child: Center(
                                   child: Text(
-                                      style: GoogleFonts.nunito(fontSize: 20),
-                                      widget.tasks[index].content),
+                                      widget.tasks[index]),
                                 ),
                               ))),
-                    ),
-                  ),
-                )
-            ]),
-          ),
-        )));
+                        ),
+                      ),
+                    )
+                ]),
+              ),
+            )));
   }
 
   void submit() {

@@ -1,5 +1,3 @@
-
-
 class ProjectFriendsRepository{
   static final List<Friend> friends=[
     Friend("Semih", "Yagci"),
