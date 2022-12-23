@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:remainder/models/people.dart';
+import 'package:remainder/models/task.dart';
 import 'repository/project_friends.dart';
 import 'repository/tasks_repository.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
@@ -170,8 +172,11 @@ class _TaskPageState extends State<TaskPage> {
                                       setState(() {
                                         widget.tasks.add(Task(
                                             _textController.text.toString(),
-                                            Friend("Semih", "Yagci"),
-                                            DateTime.now()));
+                                            "aaa",
+                                            [People("Semih", "Yagci")],
+                                            DateTime.now(),
+                                            DateTime.now().subtract(Duration(days: 1))),
+                                            );
                                       });
                                     }),
                                 border: const OutlineInputBorder()),

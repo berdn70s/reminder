@@ -1,18 +1,10 @@
-import 'package:remainder/repository/project_friends.dart';
+import 'package:remainder/models/people.dart';
+import 'package:remainder/models/task.dart';
 
 class TasksRepository{
   final List<Task> task=[
-    Task("Functional Req1", Friend("Ahmet", "Yalın"), DateTime.now()),
-    Task("Functional Req2", Friend("Mehmet", "Çakıcı"), DateTime.now().subtract(Duration(days: 1))),
+    Task("Functional Req1","ananıs", [People("Ahmet", "Yalın")], DateTime.now(),DateTime.now().subtract(Duration(days: 1))),
   ];
 
-}
-
-class Task{
-  String content;
-  Friend creator;
-  DateTime createdTime;
-
-  Task(this.content, this.creator, this.createdTime);
 }
 

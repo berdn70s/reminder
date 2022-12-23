@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/repository/project_friends.dart';
+import 'package:remainder/models/people.dart';
 import 'package:remainder/repository/project_repository.dart';
 import 'package:remainder/task_screen.dart';
 
 class ProjectPersonViewScreen extends StatefulWidget {
-  final List<Friend> includedPeople;
+  final List<People> includedPeople;
 
   const ProjectPersonViewScreen(this.includedPeople, {Key? key})
       : super(key: key);
@@ -63,7 +63,9 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
                                   "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
                                 )
                               ])))))))
-        ]));
+        ]
+        )
+    );
   }
 }
 
@@ -77,7 +79,6 @@ class ProjectsScreen extends StatefulWidget {
 class _ProjectsScreenState extends State<ProjectsScreen> {
   FirebaseFirestore db = FirebaseFirestore.instance;
   final TextEditingController controller = TextEditingController();
-  ProjectRepository projectRepository = ProjectRepository();
 
   @override
   void dispose() {
@@ -189,15 +190,23 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     final docUser = db.collection('projects').doc(controller.text);
     final tasks = docUser.collection('tasks');
     final task = {
-      'name': 'task1',
-      'desc': 'blabalbaba',
-      'whotodo':FirebaseAuth.instance.currentUser!.email.toString(),};
+      'content': 'task1',
+      'descriotion': 'blabalbaba',
+      'whoToDo':["Mehmet","Suleyman"],
+      'createdTime': DateTime.now(),
+      'dueTime': DateTime.now().subtract(Duration(days: 1)),
+    };
     final task2 = {
-      'name': 'task2',
-      'desc': 'blabalbaba',
-      'whotodo':FirebaseAuth.instance.currentUser!.email.toString(),};
+      'content': 'task2',
+      'descriotion': 'blabalbabqa',
+      'whoToDo':["Ali","Ahmet"],
+      'createdTime': DateTime.now(),
+      'dueTime': DateTime.now().subtract(Duration(days: 1)),
+    };
     final project = {
-      'projectname': controller.text,
+      'projectName': controller.text,
+      'tasks':[],
+      'contributors':[]
     };
     await docUser.set(project);
     await tasks.add(task);
