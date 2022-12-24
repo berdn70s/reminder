@@ -25,8 +25,6 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
-  List<Task>? tasks1;
-  Future<List<Task>>? taskList;
   var isAnimDisplay = false;
   var isTasksDisplay = true;
   final _textController = TextEditingController();
@@ -46,14 +44,14 @@ class _TaskPageState extends State<TaskPage> {
     super.dispose();
   }
 
-  Future popUp() => showDialog(
+  Future popUp(Task taskdata) => showDialog(
       context: this.context,
       builder: (context) => AlertDialog(
             title: Text('Task'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text("Task description"),
+                Text(taskdata.description),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Row(
@@ -72,6 +70,8 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                     ],
                   ),
+
+
                 ),
               ],
             ),
@@ -179,22 +179,13 @@ class _TaskPageState extends State<TaskPage> {
                                     shadows: [Shadow(blurRadius: 20.2)]),
                                 onPressed: (()  {
                                   addTask();
+                                  setState(() {
+
+                                  });
                                 })),
                             border: const OutlineInputBorder()),
                         controller: _textController,
                       ),
-                      IconButton(
-                          icon: const Icon(Icons.highlight_off,
-                              color: Colors.grey,
-                              size: 30,
-                              shadows: [Shadow(blurRadius: 20.2)]),
-                          onPressed: () {
-                            setState(() {
-                              if (widget.tasks.isNotEmpty) {
-                                widget.tasks.removeLast();
-                              }
-                            });
-                          })
                     ],
                   ),
                 ),
@@ -216,10 +207,22 @@ class _TaskPageState extends State<TaskPage> {
                                     foregroundColor: Colors.black,
                                     backgroundColor: Colors.grey),
                                 onPressed: () {
-                                  popUp();
+                                  popUp(widget.tasks[index]);
                                 },
-                                child: Center(
-                                  child: Text(widget.tasks[index].content),
+                                child:Row(
+                                  children: [
+                                    Text(widget.tasks[index].content),
+                                    IconButton(
+                                        icon: const Icon(Icons.highlight_off,
+                                            color: Colors.grey,
+                                            size: 30,
+                                            shadows: [Shadow(blurRadius: 20.2)]),
+                                        onPressed: () {
+                                          deleteTask(widget.tasks[index]);
+                                          setState(() {
+                                          });
+                                        })
+                                  ],
                                 ),
                               ))),
                     ),
@@ -234,7 +237,14 @@ class _TaskPageState extends State<TaskPage> {
     Navigator.pop(context);
   }
   addTask() async {
-    await service.addTask(widget.project,Task('content', 'description', []));
+    await service.addTask(widget.project,Task(_textController.text, 'description', []));
+    widget.tasks=await service.retrieveTasks(widget.project);
+    setState(() {
+
+    });
+  }
+  deleteTask(Task taskdata) async {
+    await service.deleteTask(widget.project,taskdata);
     widget.tasks=await service.retrieveTasks(widget.project);
     setState(() {
 

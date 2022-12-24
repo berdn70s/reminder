@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
@@ -7,11 +6,11 @@ class DatabaseService{
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  addProject(Project projectData) async {
+  Future <void> addProject(Project projectData) async {
     await _db.collection("projects").doc(projectData.projectName).set(projectData.toMap());
   }
 
-  updateProject(Project projectData) async {
+  Future <void> updateProject(Project projectData) async {
     await _db
         .collection("projects")
         .doc(projectData.projectName)
@@ -25,23 +24,20 @@ class DatabaseService{
   Future<List<Project>> retrieveProjects() async {
     QuerySnapshot<Map<String, dynamic>> snapshot =
     await _db.collection("projects").get();
-    print(snapshot.docs
-        .map((docSnapshot) => Project.fromDocumentSnapshot(docSnapshot))
-        .toList());
     return snapshot.docs
         .map((docSnapshot) => Project.fromDocumentSnapshot(docSnapshot))
         .toList();
   }
-  addTask(Project project,Task taskData) async {
-    await _db.collection("projects").doc(project.projectName).collection("tasks").add(taskData.toMap());
+  Future <void> addTask(Project project,Task taskData) async {
+    await _db.collection("projects").doc(project.projectName).collection("tasks").doc(taskData.content).set(taskData.toMap());
   }
 
-  updateTask(Task taskData) async {
+  Future <void> updateTask(Task taskData) async {
     await _db.collection("projects").doc("tasks").update(taskData.toMap());
   }
 
-  Future<void> deleteTask(Task taskData) async {
-    await _db.collection("projects").doc("tasks").collection(taskData.content).doc().delete();
+  Future<void> deleteTask(Project project,Task taskData) async {
+    await _db.collection("projects").doc(project.projectName).collection("tasks").doc(taskData.content).delete();
   }
 
   Future<List<Task>> retrieveTasks(Project projectData) async {
