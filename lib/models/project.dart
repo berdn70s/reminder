@@ -11,7 +11,6 @@ class Project {
 
   Project(this.projectName, this.tasks,this.contributors);
 
-  final _db=FirebaseFirestore.instance;
 
   Map<String, dynamic> toMap() {
     return {
@@ -35,24 +34,4 @@ class Project {
             ? null
             : doc.data()?["contributors"].cast<People>();
 
-  addProject(Project projectData) async {
-    await _db.collection("projects").add(projectData.toMap());
-  }
-
-  updateProject(Project projectData) async {
-    await _db.collection("projects").doc(projectData.projectName).update(projectData.toMap());
-  }
-
-  Future<void> deleteProject(Project projectData) async {
-    await _db.collection("projects").doc(projectData.projectName).delete();
-
-  }
-
-  Future<List<Project>> retrieveProjects() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot =
-    await _db.collection("projects").get();
-    return snapshot.docs
-        .map((docSnapshot) => Project.fromDocumentSnapshot(docSnapshot))
-        .toList();
-  }
 }

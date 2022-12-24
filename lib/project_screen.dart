@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remainder/database_service.dart';
 import 'package:remainder/models/people.dart';
+import 'package:remainder/models/project.dart';
+import 'package:remainder/models/task.dart';
 import 'package:remainder/repository/project_repository.dart';
 import 'package:remainder/task_screen.dart';
 
@@ -63,9 +66,7 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
                                   "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
                                 )
                               ])))))))
-        ]
-        )
-    );
+        ]));
   }
 }
 
@@ -77,7 +78,9 @@ class ProjectsScreen extends StatefulWidget {
 }
 
 class _ProjectsScreenState extends State<ProjectsScreen> {
-  FirebaseFirestore db = FirebaseFirestore.instance;
+  DatabaseService service = DatabaseService();
+  Future<List<Project>>? projectList;
+  List<Project>? retrievedProjectList;
   final TextEditingController controller = TextEditingController();
 
   @override
@@ -87,130 +90,138 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _initRetrieval();
+  }
+
+  Future<void> _initRetrieval() async {
+    projectList = service.retrieveProjects();
+    retrievedProjectList = await service.retrieveProjects();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot<Map<String, dynamic>>> snapshots = db.collection('projects').snapshots();
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.black54,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.timelapse, color: Colors.black),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                "REMAINDER",
-                style: GoogleFonts.barlow(color: Colors.black),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              const Icon(
-                Icons.timelapse,
-                color: Colors.black,
-              )
-            ],
-          ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.black54,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.timelapse, color: Colors.black),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              "REMAINDER",
+              style: GoogleFonts.barlow(color: Colors.black),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            const Icon(
+              Icons.timelapse,
+              color: Colors.black,
+            )
+          ],
         ),
-        body: Column(children: [
-          Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 21.0),
-                child: StreamBuilder(//<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: snapshots,
-                  builder: (context, snapshot){
-                    if(!snapshot.hasData){
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                              child: ListView(
-                                children: snapshot.data?.docs.map<Widget>((document)
-                                {
-                                  return Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 5,top: 5),
-                                        child: ElevatedButton(style: ElevatedButton.styleFrom(
-                                            foregroundColor: Colors.black,
-                                            backgroundColor: Colors.grey),
-                                          onPressed: () async{
-                                          final tasks= await document.reference.collection("tasks").get();
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) {
-                                                      return TaskPage(tasks.docs.map((e) => e.get('name')).toList());
-                                                    }));
-
-                                          }, child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(child: Text(document['projectname'])),
-                                              IconButton(
-                                                  onPressed: () {
-
-                                                  },
-                                                  icon: const Icon(Icons.person_pin))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                })?.toList() ?? [],
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: FutureBuilder(
+            future: projectList,
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Project>> snapshot) {
+              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                return ListView.separated(
+                    itemCount: retrievedProjectList!.length,
+                    separatorBuilder: (context, index) => const SizedBox(
+                          height: 10,
+                        ),
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          Dismissible(
+                            onDismissed: null,
+                            background: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(16.0)),
+                              padding: const EdgeInsets.only(right: 28.0),
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: const Text(
+                                "DELETE",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            direction: DismissDirection.endToStart,
+                            resizeDuration: const Duration(milliseconds: 200),
+                            key: UniqueKey(),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 83, 80, 80),
+                                  borderRadius: BorderRadius.circular(16.0)),
+                              child: ListTile(
+                                onTap: () async {
+                                  List<Task> tasks = await service.retrieveTasks(
+                                      retrievedProjectList![index]);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => TaskPage(tasks,retrievedProjectList![index])));
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                title: Text(
+                                    retrievedProjectList![index].projectName),
+                                trailing: ElevatedButton(
+                                  onPressed: () {
+                                    service.deleteProject(
+                                        retrievedProjectList![index]);
+                                    setState(() {
+                                      _initRetrieval();
+                                    });
+                                  },
+                                  child: Text('delete'),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
+                          TextField(
+                            controller: controller,
+                          )
+                        ],
+                      );
+                    });
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  retrievedProjectList!.isEmpty) {
+                return Center(
+                  child: TextField(
+                    controller: controller,
+                  ),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
           ),
-          TextField(
-            controller: controller,
-          ),
-          ElevatedButton(
-              onPressed: addProject, child: const Text('Add project'))
-        ]));
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (() async {
+          addProject();
+          setState(() {
+            _initRetrieval();
+          });
+        }),
+        tooltip: 'add',
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 
   addProject() async {
-    final docUser = db.collection('projects').doc(controller.text);
-    final tasks = docUser.collection('tasks');
-    final task = {
-      'content': 'task1',
-      'descriotion': 'blabalbaba',
-      'whoToDo':["Mehmet","Suleyman"],
-      'createdTime': DateTime.now(),
-      'dueTime': DateTime.now().subtract(Duration(days: 1)),
-    };
-    final task2 = {
-      'content': 'task2',
-      'descriotion': 'blabalbabqa',
-      'whoToDo':["Ali","Ahmet"],
-      'createdTime': DateTime.now(),
-      'dueTime': DateTime.now().subtract(Duration(days: 1)),
-    };
-    final project = {
-      'projectName': controller.text,
-      'tasks':[],
-      'contributors':[]
-    };
-    await docUser.set(project);
-    await tasks.add(task);
-    await tasks.add(task2);
+    service.addProject(Project(controller.text, [], []));
   }
-
 }
