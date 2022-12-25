@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
       elevation: 0,
       backgroundColor: Colors.black54,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           const Icon(Icons.timelapse, color: Colors.black),
           const SizedBox(
