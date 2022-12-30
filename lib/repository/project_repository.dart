@@ -6,14 +6,7 @@ import 'package:remainder/repository/tasks_repository.dart';
 
 class ProjectRepository{
   final List<Project> projects=[
-    Project("Project1",[
-      Task("Functional Req1","ananıs", [People("Ahmet", "Yalın")],),
-     ],[
-       People("Semih", "Yağcı"),
-      People("Ahmet", "Yalın"),
-      People("Mehmet", "Çakıcı")
-    ]
-    ),
+
   ];
 
   void downloadProject(){

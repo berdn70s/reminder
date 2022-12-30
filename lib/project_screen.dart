@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/database_service.dart';
 import 'package:remainder/models/people.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
-import 'package:remainder/repository/project_repository.dart';
+import 'package:remainder/repository/project_friends.dart';
+import 'package:remainder/services/database_service.dart';
 import 'package:remainder/task_screen.dart';
-
 class ProjectPersonViewScreen extends StatefulWidget {
   final List<People> includedPeople;
 
@@ -34,14 +31,14 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
               children: [
                 const Icon(Icons.timelapse, color: Colors.black),
                 const SizedBox(
-                  width: 10,
+                  width: 30,
                 ),
                 Text(
                   "REMAINDER",
                   style: GoogleFonts.barlow(color: Colors.black),
                 ),
                 const SizedBox(
-                  width: 10,
+                  width: 30,
                 ),
                 const Icon(
                   Icons.timelapse,
@@ -106,118 +103,181 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.black54,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.timelapse, color: Colors.black),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              "REMAINDER",
-              style: GoogleFonts.barlow(color: Colors.black),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            const Icon(
-              Icons.timelapse,
-              color: Colors.black,
-            )
-          ],
-        ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FutureBuilder(
-            future: projectList,
-            builder:
-                (BuildContext context, AsyncSnapshot<List<Project>> snapshot) {
-              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                return ListView.separated(
-                    itemCount: retrievedProjectList!.length,
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 10,
-                        ),
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Dismissible(
-                            onDismissed: null,
-                            background: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(16.0)),
-                              padding: const EdgeInsets.only(right: 28.0),
-                              alignment: AlignmentDirectional.centerEnd,
-                              child: const Text(
-                                "DELETE",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            direction: DismissDirection.endToStart,
-                            resizeDuration: const Duration(milliseconds: 200),
-                            key: UniqueKey(),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 83, 80, 80),
-                                  borderRadius: BorderRadius.circular(16.0)),
-                              child: ListTile(
-                                onTap: () async {
-                                  List<Task> tasks = await service.retrieveTasks(
-                                      retrievedProjectList![index]);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => TaskPage(tasks,retrievedProjectList![index])));
-                                },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                title: Text(
-                                    retrievedProjectList![index].projectName),
-                                trailing: ElevatedButton(
-                                  onPressed: () {
-                                    service.deleteProject(
-                                        retrievedProjectList![index]);
-                                    setState(() {
-                                      _initRetrieval();
-                                    });
-                                  },
-                                  child: Text('delete'),
-                                ),
-                              ),
-                            ),
-                          ),
-                          TextField(
-                            controller: controller,
-                          )
-                        ],
-                      );
-                    });
-              } else if (snapshot.connectionState == ConnectionState.done &&
-                  retrievedProjectList!.isEmpty) {
-                return Center(
-                  child: TextField(
-                    controller: controller,
-                  ),
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
+        title: Padding(
+          padding: const EdgeInsets.only(left: 49),
+          child: Row(
+            children: [
+              const Icon(Icons.timelapse, color: Colors.black),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                "REMAINDER",
+                style: GoogleFonts.barlow(color: Colors.black),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Icons.timelapse,
+                color: Colors.black,
+              )
+            ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (() async {
-          addProject();
-          setState(() {
-            _initRetrieval();
-          });
-        }),
-        tooltip: 'add',
-        child: const Icon(Icons.add),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.black54, Colors.redAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FutureBuilder(
+              future: projectList,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Project>> snapshot) {
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                            itemCount: retrievedProjectList!.length,
+                            separatorBuilder: (context, index) =>
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  Dismissible(
+                                    onDismissed: null,
+                                    background: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                          BorderRadius.circular(16.0)),
+                                      padding:
+                                      const EdgeInsets.only(right: 28.0),
+                                      alignment: AlignmentDirectional.centerEnd,
+                                      child: const Text(
+                                        "DELETE",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    direction: DismissDirection.endToStart,
+                                    resizeDuration:
+                                    const Duration(milliseconds: 200),
+                                    key: UniqueKey(),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 83, 80, 80),
+                                          borderRadius:
+                                          BorderRadius.circular(16.0)),
+                                      child: ListTile(
+                                        onTap: () async {
+                                          List<Task> tasks =
+                                          await service.retrieveTasks(
+                                              retrievedProjectList![index]);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TaskPage(
+                                                          tasks,
+                                                          retrievedProjectList![
+                                                          index])));
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(4.0),
+                                        ),
+                                        title: Text(retrievedProjectList![index]
+                                            .projectName),
+                                        trailing: ElevatedButton(
+                                          style: const ButtonStyle(
+                                              backgroundColor:
+                                              MaterialStatePropertyAll<
+                                                  Color>(Colors.blueGrey),
+                                              shadowColor:
+                                              MaterialStatePropertyAll<
+                                                  Color>(Colors.redAccent)),
+                                          onPressed: () {
+                                            service.deleteProject(
+                                                retrievedProjectList![index]);
+                                            setState(() {
+                                              _initRetrieval();
+                                            });
+                                          },
+                                          child: const Icon(
+                                            Icons.delete,
+                                            color: Colors.black38,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            TextField(
+                              style: const TextStyle(color: Colors.black),
+                              decoration: InputDecoration(constraints: BoxConstraints.loose(const Size.fromRadius(140),),
+                                  hintText: "Project's name",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.2),
+
+                                  ),
+                                  labelText: 'ADD A PROJECT'),
+                              autocorrect: false,
+                              cursorColor: Colors.black,
+                              controller: controller,
+                            ),IconButton(onPressed: (() async {
+                              addProject();
+                              setState(() {
+                                _initRetrieval();
+                              });
+                            }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                } else if (snapshot.connectionState == ConnectionState.done &&
+                    retrievedProjectList!.isEmpty) {
+                  return Column(
+                    children: [
+                      Center(
+                        child: TextField(
+                          controller: controller,
+                        ),
+                      ),
+                      IconButton(onPressed: (() async {
+                        addProject();
+                        setState(() {
+                          _initRetrieval();
+                          controller.text="";
+                        });
+                      }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
+                    ],
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+        ),
       ),
+
     );
   }
 

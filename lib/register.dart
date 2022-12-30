@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/login.dart';
+import 'package:remainder/services/auth_service.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -15,6 +14,10 @@ class _RegisterState extends State<Register> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final checkingPasswordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
+  AuthService authService = AuthService();
   bool visibilityCheck = true;
 
   @override
@@ -22,31 +25,32 @@ class _RegisterState extends State<Register> {
     emailController.dispose();
     passwordController.dispose();
     checkingPasswordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     super.dispose();
   }
 
   register() async {
-    if (passwordController.text == checkingPasswordController.text) {
-      try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailController.text, password: passwordController.text);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Login()));
-      } on FirebaseAuthException catch (error) {
-        Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
-      }
-    } else {
-      Fluttertoast.showToast(
-          msg: 'Password does not match.', gravity: ToastGravity.TOP);
-      passwordController.text = '';
-      checkingPasswordController.text = '';
-    }
+    await authService.register(
+        firstNameController.text,
+        lastNameController.text,
+        emailController.text,
+        passwordController.text,
+        checkingPasswordController.text,context);
+
+
   }
 
   @override
   void initState() {
     super.initState();
     emailController.addListener(() {
+      setState(() {});
+    });
+    firstNameController.addListener(() {
+      setState(() {});
+    });
+    lastNameController.addListener(() {
       setState(() {});
     });
 
@@ -94,145 +98,170 @@ class _RegisterState extends State<Register> {
               end: Alignment.bottomCenter),
         ),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 10,
-              right: 10,
-              bottom: 50,
-              top: 50,
-            ),
-            child: Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                   Expanded(
-                     child: Padding(
-                      padding: EdgeInsets.only(
-                        bottom: 36,
-                      ),
-                      child: Text(
-                        "Sign UP",
-                        style: TextStyle(fontSize: 35, fontStyle: FontStyle.normal),
-                      ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 36,
                   ),
-                   ),
-                  TextField(
-                    style: const TextStyle(color: Colors.black),
-                    controller: emailController,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
+                  child: Text(
+                    "Sign UP",
+                    style: TextStyle(
+                        fontSize: 35, fontStyle: FontStyle.normal),
+                  ),
+                ),
+              ),
+              TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: firstNameController,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        firstNameController.clear();
+                      },
+                      icon: const Icon(Icons.clear_rounded),
+                    ),
+                    labelText: "Name",
+                    hintText: "Enter your name."),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: lastNameController,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        lastNameController.clear();
+                      },
+                      icon: const Icon(Icons.clear_rounded),
+                    ),
+                    labelText: "Last name",
+                    hintText: "Enter your last name."),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: emailController,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        emailController.clear();
+                      },
+                      icon: const Icon(Icons.clear_rounded),
+                    ),
+                    labelText: "Email",
+                    hintText: "Enter a valid email."),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                controller: passwordController,
+                obscureText: visibilityCheck ? true : false,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    suffixIcon: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
                           onPressed: () {
-                            emailController.clear();
+                            passwordController.clear();
                           },
                           icon: const Icon(Icons.clear_rounded),
                         ),
-                        labelText: "Email",
-                        hintText: "Enter a valid email."),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: visibilityCheck ? true : false,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        suffixIcon: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                passwordController.clear();
-                              },
-                              icon: const Icon(Icons.clear_rounded),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  visibilityCheck = !visibilityCheck;
-                                });
-                              },
-                              icon: !visibilityCheck
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),
-                            ),
-                          ],
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              visibilityCheck = !visibilityCheck;
+                            });
+                          },
+                          icon: !visibilityCheck
+                              ? const Icon(Icons.visibility)
+                              : const Icon(Icons.visibility_off),
                         ),
-                        labelText: "Password",
-                        hintText: "Enter a valid password."),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: checkingPasswordController,
-                    obscureText: visibilityCheck ? true : false,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        suffixIcon: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                checkingPasswordController.clear();
-                              },
-                              icon: const Icon(Icons.clear_rounded),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  visibilityCheck = !visibilityCheck;
-                                });
-                              },
-                              icon: !visibilityCheck
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),
-                            ),
-                          ],
-                        ),
-                        labelText: "Confirm Password",
-                        hintText: "Enter the same password."),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    width: 150,
-                    height: 35,
-                    child: ElevatedButton(
-                      onPressed: emailController.text.isEmpty ||
-                              passwordController.text.isEmpty ||
-                              checkingPasswordController.text.isEmpty
-                          ? null
-                          : register,
-                      child: Text(
-                        'Sign UP',
-                        style: GoogleFonts.arya(
-                            textStyle:
-                                const TextStyle(color: Colors.black, fontSize: 22)),
-                      ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => const Login()));
-                      }
-                      //Navigated to login page.
-                      ,
-                      child: Text('Already have an Account? LOGIN!',
-                          style: TextStyle(color: Colors.grey, fontSize: 15)))
-                ],
+                    labelText: "Password",
+                    hintText: "Enter a valid password."),
               ),
-            ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                controller: checkingPasswordController,
+                obscureText: visibilityCheck ? true : false,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    suffixIcon: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            checkingPasswordController.clear();
+                          },
+                          icon: const Icon(Icons.clear_rounded),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              visibilityCheck = !visibilityCheck;
+                            });
+                          },
+                          icon: !visibilityCheck
+                              ? const Icon(Icons.visibility)
+                              : const Icon(Icons.visibility_off),
+                        ),
+                      ],
+                    ),
+                    labelText: "Confirm Password",
+                    hintText: "Enter the same password."),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                width: 150,
+                height: 35,
+                child: ElevatedButton(
+                  onPressed: emailController.text.isEmpty ||
+                          passwordController.text.isEmpty ||
+                          checkingPasswordController.text.isEmpty
+                      ? null
+                      : register,
+                  child: Text(
+                    'Sign UP',
+                    style: GoogleFonts.arya(
+                        textStyle: const TextStyle(
+                            color: Colors.black, fontSize: 22)),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Login()));
+                  }
+                  //Navigated to login page.
+                  ,
+                  child: const Text('Already have an Account? LOGIN!',
+                      style: TextStyle(color: Colors.grey, fontSize: 15)))
+            ],
           ),
         ),
       ),

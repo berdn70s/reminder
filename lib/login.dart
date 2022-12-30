@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/register.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:remainder/project_screen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:remainder/changePass.dart';
+import 'package:remainder/services/auth_service.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  AuthService authService=AuthService();
   bool visibilityCheck = true;
 
   @override
@@ -25,12 +27,17 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
   signIn() async {
-    try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProjectsScreen()));
-    } on FirebaseAuthException catch (error){
-      Fluttertoast.showToast(msg: error.message!,gravity: ToastGravity.TOP);
+    try {
+      await authService.signIn(emailController.text, passwordController.text,context);
+      if(!mounted){
+
+      }
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ProjectsScreen()));
+
+    } on FirebaseAuthException catch (error) {
+      Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
     }
+
 
   }
 
