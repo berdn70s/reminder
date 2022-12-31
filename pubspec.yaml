@@ -43,7 +43,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   animate_do: ^3.0.2
   riverpod: ^2.1.1
-  alan_voice: ^3.10.0
   msh_checkbox: ^2.0.0
   roundcheckbox: ^2.0.5
 

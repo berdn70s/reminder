@@ -2,7 +2,9 @@ import 'package:remainder/models/people.dart';
 
 class ProjectFriendsRepository{
   static final List<People> friends=[
-    People("firstName", "lastName", true)
+    People("Wajahat", "Karim", false),
+    People("Gazihan", "Alankus", true),
+    People("Hamza", "Cekirdek", true)
 
   ];
 

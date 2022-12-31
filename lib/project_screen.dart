@@ -25,7 +25,7 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
           elevation: 0,
           backgroundColor: Colors.black54,
           title: Padding(
-            padding: const EdgeInsets.only(right: 45),
+            padding: EdgeInsets.only(right: 45),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

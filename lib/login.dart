@@ -162,6 +162,7 @@ class _LoginState extends State<Login> {
                   width: 150,
                   height: 35,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: emailController.text.isEmpty ||
                         passwordController.text.isEmpty
                         ? null
@@ -169,17 +170,18 @@ class _LoginState extends State<Login> {
                     child: Text(
                       'Login',
                       style: GoogleFonts.arya(
-                          textStyle: const TextStyle(color: Colors.black, fontSize: 22)),
+                          textStyle: const TextStyle(color: Colors.black, fontSize: 20)),
                     ),
                   ),
                 ),
                 const SizedBox(
-                  height: 5,
+                  height: 6,
                 ),
                 SizedBox(
                   width: 150,
                   height: 35,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ChangePassword()));
                     },

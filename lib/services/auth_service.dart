@@ -16,7 +16,7 @@ class AuthService {
         UserCredential user = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         await service
-            .addUser(Person(firstName, lastName, email, user.user!.uid));
+            .addUser(Person(firstName, lastName, email, user.user!.uid,));
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => const Login()));
       } on FirebaseAuthException catch (error) {

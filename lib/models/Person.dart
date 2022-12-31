@@ -6,29 +6,32 @@ class Person {
   String lastName;
   String email;
   String uid;
-  final _user=FirebaseAuth.instance.currentUser;
+  bool? isDoingTask = false;
+  final _user = FirebaseAuth.instance.currentUser;
 
-
-  Person(this.firstName, this.lastName, this.email,this.uid);
+  Person(this.firstName, this.lastName, this.email, this.uid, {this.isDoingTask});
 
   Map<String, dynamic> toMap() {
     return {
       'firstName': firstName,
       'lastName': lastName,
-      'email': _user!.email ,
+      'email': _user!.email,
       'uid': _user!.uid,
+      'isDoingTask': isDoingTask
     };
   }
 
   Person.fromMap(Map<String, dynamic> peopleMap)
       : firstName = peopleMap["firstName"],
         lastName = peopleMap["lastName"],
-        email= peopleMap["email"],
-        uid=peopleMap["uid"];
+        email = peopleMap["email"],
+        uid = peopleMap["uid"],
+        isDoingTask = peopleMap["isDoingTask"];
 
   Person.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : firstName = doc.data()!["firstName"],
         lastName = doc.data()!["lastName"],
-        email=doc.data()!["email"],
-        uid=doc.data()!["uid"];
+        email = doc.data()!["email"],
+        uid = doc.data()!["uid"],
+        isDoingTask = doc.data()!["isDoingTask"];
 }

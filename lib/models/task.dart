@@ -6,8 +6,9 @@ class Task{
   String content;
   String description;
   List<People> whoToDo;
+  bool? isItDone;
 
-  Task(this.content, this.description, this.whoToDo);
+  Task(this.content, this.description, this.whoToDo, {this.isItDone});
 
 
   Map<String, dynamic> toMap() {
@@ -23,13 +24,15 @@ class Task{
   Task.fromMap(Map<String, dynamic> taskMap)
       : content = taskMap["content"],
         description = taskMap["description"],
-        whoToDo = taskMap["whoToDo"];
+        whoToDo = taskMap["whoToDo"],
+  isItDone = taskMap["isItDone"];
 
   Task.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : content = doc.data()!["content"],
         description = doc.data()!["description"],
         whoToDo = doc.data()?["whoToDo"] == null
             ? null
-            : doc.data()?["whoToDo"].cast<People>();
+            : doc.data()?["whoToDo"].cast<People>(),
+        isItDone =doc.data()!["isItDone"];
 
 }
