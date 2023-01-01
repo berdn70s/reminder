@@ -271,7 +271,9 @@ class _TaskPageState extends State<TaskPage> {
                                     shadows: [Shadow(blurRadius: 20.2)]),
                                 onPressed: (() {
                                   addTask();
-                                  setState(() {});
+                                  setState(() {
+                                    _textController.text="";
+                                  });
                                 })),
                             border: const OutlineInputBorder()),
                         controller: _textController,
