@@ -7,9 +7,6 @@ import 'package:remainder/models/task.dart';
 import 'package:remainder/services/database_service.dart';
 import 'repository/project_friends.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
-import 'models/task.dart';
-    // ignore_for_file: prefer_const_constructors
-var isChecked = false;
 
 class TaskPage extends StatefulWidget {
   final Project project;
@@ -30,22 +27,22 @@ class _TaskPageState extends State<TaskPage> {
     String owners = "";
 
     for (int i = 0; i < ProjectFriendsRepository.friends.length; i++) {
-      if (ProjectFriendsRepository.friends[i].isDoingTask!) {
-        owners = "$owners --> ${ProjectFriendsRepository.friends[i].firstName} ${ProjectFriendsRepository.friends[i].lastName}\n";
-      }
+      owners =
+          "$owners --> ${ProjectFriendsRepository.friends[i].firstName} ${ProjectFriendsRepository.friends[i].lastName}\n";
     }
     return owners;
   }
 
   bool whoToDoCheck = false;
-  var isAnimDisplay = true;
-  var isTasksDisplay = false;
+  bool isChecked = false;
+  bool isAnimDisplay = false;
+  bool isTasksDisplay = false;
   final _textController = TextEditingController();
   DatabaseService service = DatabaseService();
 
-
   @override
   void initState() {
+    _textController.addListener(() { });
     super.initState();
   }
 
@@ -57,9 +54,10 @@ class _TaskPageState extends State<TaskPage> {
 
   Future contributorSelector() => showDialog(
       context: context,
-      builder: (context) => AlertDialog( backgroundColor: Colors.grey,shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(22.0))),
-            
+      builder: (context) => AlertDialog(
+            backgroundColor: Colors.grey,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(22.0))),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
@@ -78,7 +76,8 @@ class _TaskPageState extends State<TaskPage> {
                       children: [
                         Text(
                             "${ProjectFriendsRepository.friends[i].firstName} ${ProjectFriendsRepository.friends[i].lastName}"),
-                        RoundCheckBox(borderColor: Colors.black,
+                        RoundCheckBox(
+                          borderColor: Colors.black,
                           isChecked: isChecked,
                           animationDuration: const Duration(milliseconds: 200),
                           checkedColor: Colors.blueGrey,
@@ -118,42 +117,48 @@ class _TaskPageState extends State<TaskPage> {
             ),
             content: Column(
               children: [
-                 SizedBox(height: 32,
+                SizedBox(
+                  height: 32,
                   child: Row(
-                    children:   [
+                    children: const [
                       Text(
                         ' Contributors:',
                         style: TextStyle(color: Colors.black, fontSize: 21),
                       ),
                     ],
                   ),
-                ),Text(
+                ),
+                Text(
                   ' ',
                   style: TextStyle(color: Colors.black, fontSize: 11),
                 ),
-                SizedBox(height: 82,
+                SizedBox(
+                  height: 82,
                   child: Column(
                     children: [
-                      Text( taskOwnerToString(), style: TextStyle(fontSize: 17),),
+                      Text(
+                        taskOwnerToString(),
+                        style: TextStyle(fontSize: 17),
+                      ),
                     ],
                   ),
                 ),
-                 Row(
-                   children: [
-                     SizedBox(height: 42,
-                       child: Text(' Project Description:',
+                Row(
+                  children: const [
+                    SizedBox(
+                      height: 42,
+                      child: Text(' Project Description:',
                           style: TextStyle(color: Colors.black, fontSize: 21)),
-                     ),
-                   ],
-                 ),
+                    ),
+                  ],
+                ),
                 Column(
-                  children: [Text(_textController.text)],
+                  children: [Text(taskData.description)],
                 ),
               ],
             ),
             actions: [
-              TextButton(
-                  onPressed: submit, child: const Text('Submit')),
+              TextButton(onPressed: submit, child: const Text('Submit')),
             ],
           ));
 
@@ -177,7 +182,7 @@ class _TaskPageState extends State<TaskPage> {
                   width: 10,
                 ),
                 Text(
-                  "REMAINDER",
+                  "REMINDER",
                   style: GoogleFonts.barlow(color: Colors.black),
                 ),
                 const SizedBox(
@@ -224,9 +229,10 @@ class _TaskPageState extends State<TaskPage> {
                           isAnimDisplay = !isAnimDisplay;
                           isTasksDisplay = !isTasksDisplay;
                         });
-                      }),
+                      })
                 ],
               ),
+              SizedBox(height: 10),
               if (isTasksDisplay)
                 Padding(
                   padding:
@@ -264,13 +270,13 @@ class _TaskPageState extends State<TaskPage> {
                     ],
                   ),
                 ),
-              if (isAnimDisplay)
+              if (widget.tasks.isEmpty)
                 Expanded(
                     child: Center(
                   child: Lottie.network(
                       "https://assets8.lottiefiles.com/packages/lf20_W4M8Pi.json"),
                 )),
-              if (isTasksDisplay)
+              if (widget.tasks.isNotEmpty)
                 Expanded(
                   child: Center(
                     child: Padding(
@@ -304,30 +310,22 @@ class _TaskPageState extends State<TaskPage> {
                                     Row(
                                       children: [
                                         IconButton(
+                                            iconSize: 20,
                                             onPressed: contributorSelector,
                                             icon: const Icon(Icons.people)),
                                         IconButton(
-                                            onPressed: descriptionCreater,
+                                            iconSize: 20,
+                                            onPressed: () {
+                                              descriptionCreater(
+                                                  widget.tasks[index]);
+                                            },
                                             icon:
                                                 const Icon(Icons.description)),
-                                        RoundCheckBox(size: 35,
-                                          borderColor: Colors.black,
-                                          isChecked: isChecked,
-                                          animationDuration: const Duration(milliseconds: 600),
-                                          checkedColor: Colors.grey,
-                                          disabledColor: Colors.grey,
-                                          uncheckedColor: Colors.grey,
-                                          onTap: (selected) {
-                                            setState(() {
-                                              isChecked = !isChecked;
-                                            });
-                                          },
-                                        ),
                                         IconButton(
                                             icon: const Icon(
                                                 Icons.highlight_off,
                                                 color: Colors.grey,
-                                                size: 30,
+                                                size: 25,
                                                 shadows: [
                                                   Shadow(blurRadius: 20.2)
                                                 ]),
@@ -351,12 +349,20 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void submit() {
-    Navigator.pop(context);
+    _textController.text = "";
+    Navigator.of(context).pop();
   }
 
   addTask() async {
-    await service.addTask(
-        widget.project, Task(_textController.text, 'description', [],isItDone: isChecked));
+    await service.addTask(widget.project,
+        Task(_textController.text, 'description', [], isItDone: isChecked));
+    widget.tasks = await service.retrieveTasks(widget.project);
+    setState(() {});
+  }
+
+  updateTask(Task taskData) async {
+    taskData.description = _textController.text;
+    await service.updateTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
     setState(() {});
   }
@@ -367,10 +373,12 @@ class _TaskPageState extends State<TaskPage> {
     setState(() {});
   }
 
-  Future descriptionCreater() => showDialog(
+  Future descriptionCreater(Task taskData) => showDialog(
       context: context,
-      builder: (context) => AlertDialog( backgroundColor: Colors.grey,shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(22.0))),
+      builder: (context) => AlertDialog(
+            backgroundColor: Colors.grey,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(22.0))),
             content: SizedBox(
               width: 100,
               height: 100,
@@ -390,7 +398,13 @@ class _TaskPageState extends State<TaskPage> {
               ),
             ),
             actions: [
-              TextButton(onPressed: submit, child: const Text('Submit')),
+              TextButton(
+                  onPressed: () {
+                    updateTask(taskData);
+                    setState(() {});
+                    submit();
+                  },
+                  child: const Text('Submit')),
             ],
           ));
 }

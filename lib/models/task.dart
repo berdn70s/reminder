@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:remainder/models/people.dart';
-import 'package:remainder/models/project.dart';
+import 'package:remainder/models/person.dart';
 
 class Task{
   String content;
   String description;
-  List<People> whoToDo;
+  List<Person> whoToDo;
   bool? isItDone;
 
   Task(this.content, this.description, this.whoToDo, {this.isItDone});
@@ -25,14 +24,14 @@ class Task{
       : content = taskMap["content"],
         description = taskMap["description"],
         whoToDo = taskMap["whoToDo"],
-  isItDone = taskMap["isItDone"];
+        isItDone = taskMap["isItDone"];
 
   Task.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : content = doc.data()!["content"],
         description = doc.data()!["description"],
         whoToDo = doc.data()?["whoToDo"] == null
             ? null
-            : doc.data()?["whoToDo"].cast<People>(),
+            : doc.data()?["whoToDo"].cast<Person>(),
         isItDone =doc.data()!["isItDone"];
 
 }

@@ -17,7 +17,6 @@ class Person {
       'lastName': lastName,
       'email': _user!.email,
       'uid': _user!.uid,
-      'isDoingTask': isDoingTask
     };
   }
 
@@ -25,13 +24,10 @@ class Person {
       : firstName = peopleMap["firstName"],
         lastName = peopleMap["lastName"],
         email = peopleMap["email"],
-        uid = peopleMap["uid"],
-        isDoingTask = peopleMap["isDoingTask"];
-
+        uid = peopleMap["uid"];
   Person.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : firstName = doc.data()!["firstName"],
         lastName = doc.data()!["lastName"],
         email = doc.data()!["email"],
-        uid = doc.data()!["uid"],
-        isDoingTask = doc.data()!["isDoingTask"];
+        uid = doc.data()!["uid"];
 }

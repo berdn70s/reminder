@@ -77,7 +77,7 @@ class _RegisterState extends State<Register> {
               width: 10,
             ),
             Text(
-              "REMAINDER",
+              "REMINDER",
               style: GoogleFonts.barlow(color: Colors.black),
             ),
             const SizedBox(

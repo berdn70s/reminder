@@ -1,14 +1,13 @@
-import 'package:remainder/models/people.dart';
+import 'package:remainder/models/person.dart';
 
 class ProjectFriendsRepository{
-  static final List<People> friends=[
-    People("Wajahat", "Karim", false),
-    People("Gazihan", "Alankus", true),
-    People("Hamza", "Cekirdek", true)
-
+  static final List<Person> friends=[
+    Person("Wajahat", "Karim", "email1","123"),
+    Person("Gazihan", "Alankus", "email2","123"),
+    Person("Hamza", "Cekirdek", "email3","123")
   ];
 
-  void addFriend(People friend){
+  void addFriend(Person friend){
     friends.add(friend);
   }
 }

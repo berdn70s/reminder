@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/models/people.dart';
+import 'package:remainder/models/person.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
-import 'package:remainder/repository/project_friends.dart';
 import 'package:remainder/services/database_service.dart';
 import 'package:remainder/task_screen.dart';
 class ProjectPersonViewScreen extends StatefulWidget {
-  final List<People> includedPeople;
+  final List<Person> includedPeople;
 
   const ProjectPersonViewScreen(this.includedPeople, {Key? key})
       : super(key: key);
@@ -34,7 +33,7 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
                   width: 30,
                 ),
                 Text(
-                  "REMAINDER",
+                  "REMINDER",
                   style: GoogleFonts.barlow(color: Colors.black),
                 ),
                 const SizedBox(
@@ -112,7 +111,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 width: 10,
               ),
               Text(
-                "REMAINDER",
+                "REMINDER",
                 style: GoogleFonts.barlow(color: Colors.black),
               ),
               const SizedBox(
@@ -282,6 +281,6 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   addProject() async {
-    service.addProject(Project(controller.text, [], []));
+    service.addProject(Project(controller.text, []));
   }
 }

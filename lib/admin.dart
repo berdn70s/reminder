@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remainder/login.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 
 Future<void> main() async {
@@ -16,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'REMAINDER',
+      title: 'REMINDER',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.brown,
       ),
-      home: const MyHomePage(title: 'REMAINDER'),
+      home: const MyHomePage(title: 'REMINDER'),
     );
   }
 }

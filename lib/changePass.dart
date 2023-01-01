@@ -52,25 +52,27 @@ class _ChangePasswordState extends State<ChangePassword> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.black54,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Icon(Icons.timelapse, color: Colors.black),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              "REMAINDER",
-              style: GoogleFonts.barlow(color: Colors.black),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            const Icon(
-              Icons.timelapse,
-              color: Colors.black,
-            )
-          ],
+        title: Padding(
+          padding: EdgeInsets.only(left: 67.5),
+          child: Row(
+            children: [
+              const Icon(Icons.timelapse, color: Colors.black),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                "REMINDER",
+                style: GoogleFonts.barlow(color: Colors.black),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              const Icon(
+                Icons.timelapse,
+                color: Colors.black,
+              )
+            ],
+          ),
         ),
       ),
       body: Container(
@@ -131,9 +133,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                   height: 10,
                 ),
                 ElevatedButton(
-                    onPressed: sendRequest,
-                    child: const Text('Send Request',
-                        style: TextStyle(color: Colors.grey, fontSize: 15)))
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                  onPressed: sendRequest,
+                  child: Text(
+                    'Send Request',
+                    style: GoogleFonts.arya(
+                        textStyle: const TextStyle(color: Colors.black, fontSize: 20)),
+                  ),
+                )
               ],
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:remainder/models/Person.dart';
+import 'package:remainder/models/person.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
 
@@ -37,8 +37,8 @@ class DatabaseService{
     await _db.collection("projects").doc(project.id).collection("tasks").doc(taskData.content).set(taskData.toMap());
   }
 
-  Future <void> updateTask(Task taskData) async {
-    await _db.collection("projects").doc("tasks").update(taskData.toMap());
+  Future <void> updateTask(Project project,Task taskData) async {
+    await _db.collection("projects").doc(project.id).collection("tasks").doc(taskData.content).update(taskData.toMap());
   }
 
   Future<void> deleteTask(Project project,Task taskData) async {
