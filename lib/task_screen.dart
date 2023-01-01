@@ -172,28 +172,37 @@ class _TaskPageState extends State<TaskPage> {
           ),
           elevation: 0,
           backgroundColor: Colors.black54,
-          title: Padding(
-            padding: const EdgeInsets.only(right: 45),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.timelapse, color: Colors.black),
-                const SizedBox(
-                  width: 10,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 45),
+                child: Row(
+                  children: [
+                    const Icon(Icons.timelapse, color: Colors.black),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "REMINDER",
+                      style: GoogleFonts.barlow(color: Colors.black),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Icon(
+                      Icons.timelapse,
+                      color: Colors.black,
+                    ),
+                  ],
                 ),
-                Text(
-                  "REMINDER",
-                  style: GoogleFonts.barlow(color: Colors.black),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Icon(
-                  Icons.timelapse,
-                  color: Colors.black,
-                )
-              ],
-            ),
+              ),
+              SizedBox(width: 85),
+              const Icon(
+                Icons.chat,
+                color: Colors.black,
+              )
+            ],
           ),
         ),
         body: Center(

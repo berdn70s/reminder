@@ -120,7 +120,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               const Icon(
                 Icons.timelapse,
                 color: Colors.black,
-              )
+              ),
             ],
           ),
         ),
