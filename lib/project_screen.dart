@@ -256,18 +256,32 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                     retrievedProjectList!.isEmpty) {
                   return Column(
                     children: [
-                      Center(
-                        child: TextField(
-                          controller: controller,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            TextField(
+                              style: const TextStyle(color: Colors.black),
+                              decoration: InputDecoration(constraints: BoxConstraints.loose(const Size.fromRadius(140),),
+                                  hintText: "Project's name",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.2),
+
+                                  ),
+                                  labelText: 'ADD A PROJECT'),
+                              autocorrect: false,
+                              cursorColor: Colors.black,
+                              controller: controller,
+                            ),IconButton(onPressed: (() async {
+                              addProject();
+                              setState(() {
+                                _initRetrieval();
+                                controller.text="";
+                              });
+                            }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
+                          ],
                         ),
-                      ),
-                      IconButton(onPressed: (() async {
-                        addProject();
-                        setState(() {
-                          _initRetrieval();
-                          controller.text=" ";
-                        });
-                      }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
+                      )
                     ],
                   );
                 } else {

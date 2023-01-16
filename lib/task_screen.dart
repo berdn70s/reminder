@@ -512,8 +512,8 @@ class AddPeopleToProject extends StatelessWidget {
                         textController.clear();
                       },
                     ),
-                    label: const Text('email'),
-                    hintText: 'Write down mail addres',
+                    label: const Text('Email'),
+                    hintText: 'Enter a valid email adress ',
                     border: const OutlineInputBorder())),
             Padding(
               padding: const EdgeInsets.only(top: 20),
