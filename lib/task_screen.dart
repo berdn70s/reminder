@@ -27,8 +27,8 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
- var project = idget._project;
-
+ var project = widget._project;
+//sdadaskdjnaslkdnaslkdnlaskdlasknd
   String taskOwnerToString() {
     String owners = "";
 
