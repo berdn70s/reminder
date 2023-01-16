@@ -3,7 +3,7 @@ import 'package:remainder/models/person.dart';
 
 class Project {
   String projectName;
-  List<Person> contributors;
+  List<String> contributors;
   String? id;
 
   Project(this.projectName,this.contributors);
@@ -27,6 +27,6 @@ class Project {
         id=doc.id,
         contributors = doc.data()?["contributors"] == null
             ? null
-            : doc.data()?["contributors"].cast<Person>();
+            : doc.data()?["contributors"].cast<String>();
 
 }

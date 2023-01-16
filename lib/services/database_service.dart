@@ -1,21 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:remainder/models/person.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
 
-class DatabaseService{
-
+class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future <void> addProject(Project projectData) async {
-    projectData.id= _db.collection("projects").doc().id;
-    await _db.collection("projects").doc(projectData.id).set(projectData.toMap());
+  Future<void> addProject(Project projectData) async {
+    projectData.id = _db.collection("projects").doc().id;
+    await _db
+        .collection("projects")
+        .doc(projectData.id)
+        .set(projectData.toMap());
   }
-  Future <void> addUser(Person person) async {
+
+  Future<void> addUser(Person person) async {
     await _db.collection("users").doc(person.uid).set(person.toMap());
   }
 
-  Future <void> updateProject(Project projectData) async {
+  Future<void> updateUser(Person person) async {
+    await _db.collection("users").doc(person.uid).update(person.toMap());
+  }
+
+  Future<void> addProjectToUser(String id, Project project) async {
+    await _db.collection("users").doc(id).update({
+      'projects': FieldValue.arrayUnion([project.id])
+    });
+  }
+
+  Future<void> addUserToProject(String email, Project project) async {
+    String id = await _db
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get()
+        .then((snapshot) => snapshot.docs[0].data()['uid'].toString());
+    await _db.collection("projects").doc(project.id).update({
+      'contributors': FieldValue.arrayUnion([id])
+    });
+  }
+
+  Future<void> updateProject(Project projectData) async {
     await _db
         .collection("projects")
         .doc(projectData.id)
@@ -26,27 +51,49 @@ class DatabaseService{
     await _db.collection("projects").doc(projectData.id).delete();
   }
 
-  Future<List<Project>> retrieveProjects() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot =
-    await _db.collection("projects").get();
+  Future<List<Project>> retrieveProjects(String id) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _db
+        .collection("projects")
+        .where("contributors", arrayContains: id)
+        .get();
     return snapshot.docs
         .map((docSnapshot) => Project.fromDocumentSnapshot(docSnapshot))
         .toList();
   }
-  Future <void> addTask(Project project,Task taskData) async {
-    await _db.collection("projects").doc(project.id).collection("tasks").doc(taskData.content).set(taskData.toMap());
+
+  Future<void> addTask(Project project, Task taskData) async {
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("tasks")
+        .doc(taskData.content)
+        .set(taskData.toMap());
   }
 
-  Future <void> updateTask(Project project,Task taskData) async {
-    await _db.collection("projects").doc(project.id).collection("tasks").doc(taskData.content).update(taskData.toMap());
+  Future<void> updateTask(Project project, Task taskData) async {
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("tasks")
+        .doc(taskData.content)
+        .update(taskData.toMap());
   }
 
-  Future<void> deleteTask(Project project,Task taskData) async {
-    await _db.collection("projects").doc(project.id).collection("tasks").doc(taskData.content).delete();
+  Future<void> deleteTask(Project project, Task taskData) async {
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("tasks")
+        .doc(taskData.content)
+        .delete();
   }
 
   Future<List<Task>> retrieveTasks(Project projectData) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await _db.collection("projects").doc(projectData.id).collection("tasks").get();
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _db
+        .collection("projects")
+        .doc(projectData.id)
+        .collection("tasks")
+        .get();
     return snapshot.docs
         .map((docSnapshot) => Task.fromDocumentSnapshot(docSnapshot))
         .toList();

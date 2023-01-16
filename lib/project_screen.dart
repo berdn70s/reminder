@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/models/person.dart';
@@ -92,8 +93,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   Future<void> _initRetrieval() async {
-    projectList = service.retrieveProjects();
-    retrievedProjectList = await service.retrieveProjects();
+    projectList = service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
+    retrievedProjectList = await service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
   }
 
   @override
@@ -282,6 +283,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   addProject() async {
-    service.addProject(Project(controller.text, []));
+    Project project= Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
+    service.addProject(project);
+    service.addProjectToUser(FirebaseAuth.instance.currentUser!.uid, project);
+
   }
 }
