@@ -206,7 +206,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                               MaterialStatePropertyAll<
                                                   Color>(Colors.redAccent)),
                                           onPressed: () {
-                                            service.deleteProject(
+                                            service.deleteProject(FirebaseAuth.instance.currentUser!.uid,
                                                 retrievedProjectList![index]);
                                             setState(() {
                                               _initRetrieval();

@@ -38,6 +38,7 @@ class DatabaseService {
     await _db.collection("projects").doc(project.id).update({
       'contributors': FieldValue.arrayUnion([id])
     });
+    addProjectToUser(id, project);
   }
 
   Future<void> updateProject(Project projectData) async {
@@ -47,8 +48,16 @@ class DatabaseService {
         .update(projectData.toMap());
   }
 
-  Future<void> deleteProject(Project projectData) async {
-    await _db.collection("projects").doc(projectData.id).delete();
+  Future<void> deleteProject(String id,Project projectData) async {
+    await _db.collection("users").doc(id).update({
+      'projects': FieldValue.arrayRemove([projectData.id])
+    });
+    await _db.collection("projects").doc(projectData.id).update({
+      'contributors':FieldValue.arrayRemove([id])
+    });
+    if(projectData.contributors.length==1){
+      await _db.collection("projects").doc(projectData.id).delete();
+    }
   }
 
   Future<List<Project>> retrieveProjects(String id) async {

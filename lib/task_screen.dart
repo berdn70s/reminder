@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:remainder/chat_screen.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
 import 'package:remainder/services/database_service.dart';
 import 'repository/project_friends.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
-import 'services/database_service.dart';
-import 'project_screen.dart';
+
 
 class TaskPage extends StatefulWidget {
 
@@ -206,10 +206,17 @@ class _TaskPageState extends State<TaskPage> {
                 ),
               ),
               SizedBox(width: 85),
-              const Icon(
-                Icons.chat,
-                color: Colors.black,
-              )
+               Expanded(
+                 child: IconButton(onPressed: (){
+                   Navigator.push(
+                       context,
+                       MaterialPageRoute(
+                           builder: (context) => ChatPage()));
+                 }, icon: Icon(
+                   Icons.chat,
+                   color: Colors.black,
+                 )),
+               )
             ],
           ),
         ),
