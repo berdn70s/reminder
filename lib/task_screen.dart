@@ -12,23 +12,24 @@ import 'project_screen.dart';
 
 class TaskPage extends StatefulWidget {
 
-  Project _project;
+  Project project;
   List<Task> tasks;
   String? email;
 
   TaskPage(
     this.tasks,
-    this._project, {
+    this.project, {
     Key? key,
   }) : super(key: key);
+
 
   @override
   State<TaskPage> createState() => _TaskPageState();
 }
 
 class _TaskPageState extends State<TaskPage> {
- var project = widget._project;
-//sdadaskdjnaslkdnaslkdnlaskdlasknd
+
+
   String taskOwnerToString() {
     String owners = "";
 
@@ -266,7 +267,7 @@ class _TaskPageState extends State<TaskPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddPeopleToProject(project)));
+                                  builder: (context) => AddPeopleToProject(widget.project)));
                         });
                       })
                 ],
@@ -395,22 +396,22 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   addTask() async {
-    await service.addTask(widget._project,
+    await service.addTask(widget.project,
         Task(_textController.text, 'description', [], isItDone: isChecked));
-    widget.tasks = await service.retrieveTasks(widget._project);
+    widget.tasks = await service.retrieveTasks(widget.project);
     setState(() {});
   }
 
   updateTask(Task taskData) async {
     taskData.description = _textController.text;
-    await service.updateTask(widget._project, taskData);
-    widget.tasks = await service.retrieveTasks(widget._project);
+    await service.updateTask(widget.project, taskData);
+    widget.tasks = await service.retrieveTasks(widget.project);
     setState(() {});
   }
 
   deleteTask(Task taskData) async {
-    await service.deleteTask(widget._project, taskData);
-    widget.tasks = await service.retrieveTasks(widget._project);
+    await service.deleteTask(widget.project, taskData);
+    widget.tasks = await service.retrieveTasks(widget.project);
     setState(() {});
   }
 
@@ -525,7 +526,7 @@ class AddPeopleToProject extends StatelessWidget {
                       color: Colors.black87,
                       fontWeight: FontWeight.w300),
                   onPress: () {
-                    service.addUserToProject(textController.text, _project);
+                    service.addUserToProject(textController.text, project);
                     Navigator.pop(context);
                   }),
             )
