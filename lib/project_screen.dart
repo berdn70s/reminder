@@ -265,7 +265,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                         addProject();
                         setState(() {
                           _initRetrieval();
-                          controller.text="";
+                          controller.text=" ";
                         });
                       }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
                     ],

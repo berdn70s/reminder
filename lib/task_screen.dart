@@ -7,14 +7,18 @@ import 'package:remainder/models/task.dart';
 import 'package:remainder/services/database_service.dart';
 import 'repository/project_friends.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
+import 'services/database_service.dart';
+import 'project_screen.dart';
 
 class TaskPage extends StatefulWidget {
-  final Project project;
+
+  Project _project;
   List<Task> tasks;
+  String? email;
 
   TaskPage(
     this.tasks,
-    this.project, {
+    this._project, {
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +27,8 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+ var project = idget._project;
+
   String taskOwnerToString() {
     String owners = "";
 
@@ -39,10 +45,11 @@ class _TaskPageState extends State<TaskPage> {
   bool isTasksDisplay = false;
   final _textController = TextEditingController();
   DatabaseService service = DatabaseService();
+  String email = '';
 
   @override
   void initState() {
-    _textController.addListener(() { });
+    _textController.addListener(() {});
     super.initState();
   }
 
@@ -238,6 +245,29 @@ class _TaskPageState extends State<TaskPage> {
                           isAnimDisplay = !isAnimDisplay;
                           isTasksDisplay = !isTasksDisplay;
                         });
+                      }),
+                  AnimatedButton(
+                      width: 140,
+                      height: 40,
+                      selectedTextColor: Colors.black87,
+                      selectedBackgroundColor: Colors.black12,
+                      isReverse: true,
+                      transitionType: TransitionType.BOTTOM_TO_TOP,
+                      borderRadius: 60,
+                      borderWidth: 2,
+                      text: 'INVITE PEOPLE',
+                      textStyle: GoogleFonts.nunito(
+                          fontSize: 16,
+                          letterSpacing: 1,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w300),
+                      onPress: () {
+                        setState(() {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddPeopleToProject(project)));
+                        });
                       })
                 ],
               ),
@@ -272,7 +302,7 @@ class _TaskPageState extends State<TaskPage> {
                                 onPressed: (() {
                                   addTask();
                                   setState(() {
-                                    _textController.text="";
+                                    _textController.text = "";
                                   });
                                 })),
                             border: const OutlineInputBorder()),
@@ -365,22 +395,22 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   addTask() async {
-    await service.addTask(widget.project,
+    await service.addTask(widget._project,
         Task(_textController.text, 'description', [], isItDone: isChecked));
-    widget.tasks = await service.retrieveTasks(widget.project);
+    widget.tasks = await service.retrieveTasks(widget._project);
     setState(() {});
   }
 
   updateTask(Task taskData) async {
     taskData.description = _textController.text;
-    await service.updateTask(widget.project, taskData);
-    widget.tasks = await service.retrieveTasks(widget.project);
+    await service.updateTask(widget._project, taskData);
+    widget.tasks = await service.retrieveTasks(widget._project);
     setState(() {});
   }
 
   deleteTask(Task taskData) async {
-    await service.deleteTask(widget.project, taskData);
-    widget.tasks = await service.retrieveTasks(widget.project);
+    await service.deleteTask(widget._project, taskData);
+    widget.tasks = await service.retrieveTasks(widget._project);
     setState(() {});
   }
 
@@ -440,4 +470,69 @@ class TaskDetailsScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class AddPeopleToProject extends StatelessWidget {
+  DatabaseService service = DatabaseService();
+  TextEditingController textController = new TextEditingController();
+  Project project;
+  AddPeopleToProject(this.project, {super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.black54, Colors.redAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: textController,
+                decoration: InputDecoration(
+                    constraints: const BoxConstraints(
+                        minHeight: 10,
+                        maxWidth: 320,
+                        maxHeight: 100,
+                        minWidth: 30),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.delete_forever_outlined),
+                      onPressed: () {
+                        textController.clear();
+                      },
+                    ),
+                    label: const Text('email'),
+                    hintText: 'Write down mail addres',
+                    border: const OutlineInputBorder())),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: AnimatedButton(
+                  width: 140,
+                  height: 40,
+                  selectedTextColor: Colors.black87,
+                  selectedBackgroundColor: Colors.black12,
+                  isReverse: true,
+                  transitionType: TransitionType.BOTTOM_TO_TOP,
+                  borderRadius: 60,
+                  borderWidth: 2,
+                  text: 'SUBMIT',
+                  textStyle: GoogleFonts.nunito(
+                      fontSize: 16,
+                      letterSpacing: 1,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w300),
+                  onPress: () {
+                    service.addUserToProject(textController.text, _project);
+                    Navigator.pop(context);
+                  }),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
 }

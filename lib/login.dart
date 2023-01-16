@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
       if(!mounted){
 
       }
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ProjectsScreen()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>  ProjectsScreen()));
 
     } on FirebaseAuthException catch (error) {
       Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
