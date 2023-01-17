@@ -43,7 +43,8 @@ class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
                 const Icon(
                   Icons.timelapse,
                   color: Colors.black,
-                )
+                ),
+               Icon(Icons.assistant_direction)
               ],
             ),
           ),
@@ -100,13 +101,13 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(automaticallyImplyLeading: false,
         elevation: 0,
         backgroundColor: Colors.black54,
         title: Padding(
           padding: const EdgeInsets.only(left: 49),
           child: Row(
-            children: [
+            children: [SizedBox(width: 65,),
               const Icon(Icons.timelapse, color: Colors.black),
               const SizedBox(
                 width: 10,
@@ -121,7 +122,11 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               const Icon(
                 Icons.timelapse,
                 color: Colors.black,
-              ),
+              ), SizedBox(width: 54,),
+              IconButton(onPressed:(){
+                FirebaseAuth.instance.signOut();
+                Navigator.pop(context);}, icon: Icon(Icons.person_off , color: Colors.black45),)
+
             ],
           ),
         ),

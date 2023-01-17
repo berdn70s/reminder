@@ -29,7 +29,7 @@ class DatabaseService {
     });
   }
 
-  Future<void> addUserToProject(String email, Project project) async {
+  Future<String> addUserToProject(String email, Project project) async {
     String id = await _db
         .collection('users')
         .where('email', isEqualTo: email)
@@ -37,7 +37,9 @@ class DatabaseService {
         .then((snapshot) => snapshot.docs[0].data()['uid'].toString());
     await _db.collection("projects").doc(project.id).update({
       'contributors': FieldValue.arrayUnion([id])
-    });
+    }
+    );
+    return id;
     addProjectToUser(id, project);
   }
 

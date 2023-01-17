@@ -29,6 +29,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  chat_bubbles: ^1.4.0
+  bubble: ^1.2.1
   lottie: ^2.0.0
   google_fonts: ^3.0.1
   flutter_riverpod: ^2.1.1
