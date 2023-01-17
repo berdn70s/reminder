@@ -73,11 +73,12 @@ class DatabaseService {
   }
 
   Future<void> addTask(Project project, Task taskData) async {
+    taskData.id = _db.collection("projects").doc(project.id).collection("tasks").doc().id;
     await _db
         .collection("projects")
         .doc(project.id)
         .collection("tasks")
-        .doc(taskData.content)
+        .doc(taskData.id)
         .set(taskData.toMap());
   }
 
@@ -86,7 +87,7 @@ class DatabaseService {
         .collection("projects")
         .doc(project.id)
         .collection("tasks")
-        .doc(taskData.content)
+        .doc(taskData.id)
         .update(taskData.toMap());
   }
 
@@ -95,7 +96,7 @@ class DatabaseService {
         .collection("projects")
         .doc(project.id)
         .collection("tasks")
-        .doc(taskData.content)
+        .doc(taskData.id)
         .delete();
   }
 

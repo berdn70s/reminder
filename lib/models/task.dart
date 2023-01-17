@@ -6,6 +6,7 @@ class Task{
   String description;
   List<Person> whoToDo;
   bool? isItDone;
+  String? id;
 
   Task(this.content, this.description, this.whoToDo, {this.isItDone});
 
@@ -15,8 +16,7 @@ class Task{
       'content': content,
       'description': description,
       'whoToDo': whoToDo,
-      //'createdTime': createdTime,
-      //'dueTime': dueTime,
+      'id':id,
     };
   }
 
@@ -24,7 +24,9 @@ class Task{
       : content = taskMap["content"],
         description = taskMap["description"],
         whoToDo = taskMap["whoToDo"],
-        isItDone = taskMap["isItDone"];
+        isItDone = taskMap["isItDone"],
+        id=taskMap["id"]
+  ;
 
   Task.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : content = doc.data()!["content"],
@@ -32,6 +34,8 @@ class Task{
         whoToDo = doc.data()?["whoToDo"] == null
             ? null
             : doc.data()?["whoToDo"].cast<Person>(),
-        isItDone =doc.data()!["isItDone"];
+        isItDone =doc.data()!["isItDone"],
+        id=doc.id
+  ;
 
 }
