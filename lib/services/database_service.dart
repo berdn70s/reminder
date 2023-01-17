@@ -27,9 +27,10 @@ class DatabaseService {
     await _db.collection("users").doc(id).update({
       'projects': FieldValue.arrayUnion([project.id])
     });
+    project.contributors.add(id);
   }
 
-  Future<String> addUserToProject(String email, Project project) async {
+  Future<void> addUserToProject(String email, Project project) async {
     String id = await _db
         .collection('users')
         .where('email', isEqualTo: email)
@@ -37,9 +38,7 @@ class DatabaseService {
         .then((snapshot) => snapshot.docs[0].data()['uid'].toString());
     await _db.collection("projects").doc(project.id).update({
       'contributors': FieldValue.arrayUnion([id])
-    }
-    );
-    return id;
+    });
     addProjectToUser(id, project);
   }
 
@@ -99,6 +98,7 @@ class DatabaseService {
         .doc(taskData.id)
         .delete();
   }
+
 
   Future<List<Task>> retrieveTasks(Project projectData) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await _db

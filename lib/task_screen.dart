@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,10 +12,8 @@ import 'package:roundcheckbox/roundcheckbox.dart';
 
 
 class TaskPage extends StatefulWidget {
-
   Project project;
   List<Task> tasks;
-  String? email;
 
   TaskPage(
     this.tasks,
@@ -46,7 +45,6 @@ class _TaskPageState extends State<TaskPage> {
   bool isTasksDisplay = false;
   final _textController = TextEditingController();
   DatabaseService service = DatabaseService();
-  String email = '';
 
   @override
   void initState() {
@@ -60,7 +58,22 @@ class _TaskPageState extends State<TaskPage> {
     super.dispose();
   }
 
-  Future contributorSelector() => showDialog(
+  Future<String> getNameOfContributor(Project projectData,String id) async {
+   Future<String> tempFirstName=await FirebaseFirestore.instance.collection("users").where("uid",isEqualTo: id).get().then((value) => value.docs[0].data()["firstName"]);
+   Future<String> tempLastName=await FirebaseFirestore.instance.collection("users").where("uid",isEqualTo: id).get().then((value) => value.docs[0].data()["lastName"]);
+   String firstName= await tempFirstName;
+   String lastName= await tempLastName;
+    return "$firstName $lastName";
+  }
+
+  String realGetNameOfContributor(Project projectData,String id){
+    String output = getNameOfContributor(projectData, id) as String;
+    return output;
+  }
+
+
+  Future contributorSelector(Project project) {
+    return showDialog(
       context: context,
       builder: (context) => AlertDialog(
             backgroundColor: Colors.grey,
@@ -77,13 +90,12 @@ class _TaskPageState extends State<TaskPage> {
               width: double.maxFinite,
               height: double.maxFinite,
               child: ListView.builder(
-                  itemCount: ProjectFriendsRepository.friends.length,
+                  itemCount: project.contributors.length,
                   itemBuilder: (context, i) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                            "${ProjectFriendsRepository.friends[i].firstName} ${ProjectFriendsRepository.friends[i].lastName}"),
+                        Text(project.contributors[i]),
                         RoundCheckBox(
                           borderColor: Colors.black,
                           isChecked: isChecked,
@@ -105,6 +117,7 @@ class _TaskPageState extends State<TaskPage> {
               TextButton(onPressed: submit, child: const Text('Submit')),
             ],
           ));
+  }
 
   Future popUp(Task taskData) => showDialog(
       context: context,
@@ -360,8 +373,11 @@ class _TaskPageState extends State<TaskPage> {
                                       children: [
                                         IconButton(
                                             iconSize: 20,
-                                            onPressed: contributorSelector,
-                                            icon: const Icon(Icons.people)),
+                                            onPressed: (){
+                                              contributorSelector(widget.project);
+                                            },
+                                            icon: const Icon(Icons.people)
+                                        ),
                                         IconButton(
                                             iconSize: 20,
                                             onPressed: () {
@@ -404,7 +420,7 @@ class _TaskPageState extends State<TaskPage> {
 
   addTask() async {
     await service.addTask(widget.project,
-        Task(_textController.text, 'description', [], isItDone: isChecked));
+        Task(_textController.text, '', [], isItDone: isChecked));
     widget.tasks = await service.retrieveTasks(widget.project);
     setState(() {});
   }
