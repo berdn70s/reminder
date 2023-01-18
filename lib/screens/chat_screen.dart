@@ -12,10 +12,10 @@ class  _ChatPageState extends State<ChatPage> {
   List<Message> _receivedMessages = [];
   List<Message> wholeMessages = [];
 
-  Message message1 = new Message('Hello Im BERDAN', "Berdan", 'BERDAN ID');
-  Message message2 = new Message('BEN BERDOS', "Berdan", 'BERDAN ID');
-  Message message3 = new Message('BEN HAMZA', "HAMZA", 'HAMZA ID');
-  Message message4 = new Message('BEN SEMIH', "SEMIH", 'SEMIH ID');
+  Message message1 = Message('Hello Im BERDAN', "Berdan", 'BERDAN ID');
+  Message message2 = Message('BEN BERDOS', "Berdan", 'BERDAN ID');
+  Message message3 = Message('BEN HAMZA', "HAMZA", 'HAMZA ID');
+  Message message4 = Message('BEN SEMIH', "SEMIH", 'SEMIH ID');
   TextEditingController textEditingController = TextEditingController();
   ScrollController scrollController = ScrollController();
   bool reverse = true;

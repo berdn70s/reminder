@@ -14,8 +14,15 @@ class DatabaseService {
         .doc(projectData.id)
         .set(projectData.toMap());
   }
+  Future<void> addChat(Project projectData) async {
+    projectData.id = _db.collection("projects").doc().id;
+    await _db
+        .collection("projects")
+        .doc(projectData.id)
+        .set(projectData.toMap());
+  }
 
-   Future<void> addUser(Person person) async {
+  Future<void> addUser(Person person) async {
     await _db.collection("users").doc(person.uid).set(person.toMap());
   }
 
@@ -58,6 +65,16 @@ class DatabaseService {
     });
     if (projectData.contributors.length == 1) {
       await _db.collection("projects").doc(projectData.id).delete();
+      await _db
+          .collection("projects")
+          .doc(projectData.id)
+          .collection("tasks")
+          .get()
+          .then((value) {
+        for (var ds in value.docs) {
+          ds.reference.delete();
+        }
+      });
     }
   }
 
