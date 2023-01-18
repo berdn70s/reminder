@@ -101,9 +101,12 @@ class _ChatPageState extends State<ChatPage> {
                   Icons.send,
                 ),
                 disabledColor: Colors.grey,
-                onPressed: (){
-                  SendMessage();
-                  textEditingController.text="";
+                onPressed: () {
+                  if (textEditingController.text == "") {
+                  } else {
+                    SendMessage();
+                    textEditingController.text = "";
+                  }
                 },
               )
             : IconButton(

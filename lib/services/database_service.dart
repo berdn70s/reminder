@@ -15,6 +15,7 @@ class DatabaseService {
         .doc(projectData.id)
         .set(projectData.toMap());
   }
+
   Future<void> addChat(Project projectData) async {
     projectData.id = _db.collection("projects").doc().id;
     await _db
@@ -66,27 +67,35 @@ class DatabaseService {
     });
     if (projectData.contributors.length == 1) {
       await _db.collection("projects").doc(projectData.id).delete();
-      await _db
-          .collection("projects")
-          .doc(projectData.id)
-          .collection("tasks")
-          .get()
-          .then((value) {
-        for (var ds in value.docs) {
-          ds.reference.delete();
-        }
-      });
-      await _db
-          .collection("projects")
-          .doc(projectData.id)
-          .collection("messages")
-          .get()
-          .then((value) {
-        for (var ds in value.docs) {
-          ds.reference.delete();
-        }
-      });
+      deleteMessages(projectData);
+      deleteTasks(projectData);
     }
+  }
+
+  Future<void> deleteMessages(Project projectData) async {
+    await _db
+        .collection("projects")
+        .doc(projectData.id)
+        .collection("messages")
+        .get()
+        .then((value) {
+      for (var ds in value.docs) {
+        ds.reference.delete();
+      }
+    });
+  }
+
+  Future<void> deleteTasks(Project project) async {
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("tasks")
+        .get()
+        .then((value) {
+      for (var ds in value.docs) {
+        ds.reference.delete();
+      }
+    });
   }
 
   Future<List<Project>> retrieveProjects(String id) async {
@@ -139,8 +148,7 @@ class DatabaseService {
         .toList();
   }
 
-
-  Future<void> addMessage(Project project,Message messageData) async {
+  Future<void> addMessage(Project project, Message messageData) async {
     await _db
         .collection("projects")
         .doc(project.id)
@@ -148,7 +156,6 @@ class DatabaseService {
         .doc()
         .set(messageData.toMap());
   }
-
 
   Future<List<Message>> retrieveMessage(Project projectData) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await _db
@@ -160,7 +167,4 @@ class DatabaseService {
         .map((docSnapshot) => Message.fromDocumentSnapshot(docSnapshot))
         .toList();
   }
-
-
-
 }
