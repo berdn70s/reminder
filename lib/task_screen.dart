@@ -85,7 +85,7 @@ class _TaskPageState extends State<TaskPage> {
     return temp;
   }
 
-  Future contributorSelector(Task taskdata) {
+  Future taskEditMenu(Task taskdata) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -94,8 +94,8 @@ class _TaskPageState extends State<TaskPage> {
                 borderRadius: BorderRadius.all(Radius.circular(22.0))),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Text('TASK EDIT MENU'),
+              children: [
+                Expanded(child: Text('You are editing ${taskdata.content}')),
                 Icon(Icons.people_outline)
               ],
             ),
@@ -434,7 +434,7 @@ class _TaskPageState extends State<TaskPage> {
                                             iconSize: 20,
                                             onPressed: () async {
                                               await _initRetrieval(widget.project);
-                                              contributorSelector(
+                                              taskEditMenu(
                                                   widget.tasks[index]);
                                             },
                                             icon: const Icon(Icons.edit)),
