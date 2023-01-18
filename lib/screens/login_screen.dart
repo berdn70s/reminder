@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/register_screen.dart';
-import 'package:remainder/project_screen.dart';
-import 'package:remainder/changePassword_screen.dart';
+import 'package:remainder/screens/changePassword_screen.dart';
+import 'package:remainder/screens/register_screen.dart';
+import 'package:remainder/screens/project_screen.dart';
 import 'package:remainder/services/auth_service.dart';
 
 class Login extends StatefulWidget {

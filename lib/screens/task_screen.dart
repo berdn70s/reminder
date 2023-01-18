@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:remainder/addPeopleToProject_screen.dart';
-import 'package:remainder/chat_screen.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
+import 'package:remainder/screens/addPeopleToProject_screen.dart';
+import 'package:remainder/screens/chat_screen.dart';
 import 'package:remainder/services/database_service.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 
