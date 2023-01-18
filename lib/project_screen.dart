@@ -1,72 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/models/person.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
 import 'package:remainder/services/database_service.dart';
 import 'package:remainder/task_screen.dart';
-class ProjectPersonViewScreen extends StatefulWidget {
-  final List<Person> includedPeople;
-
-  const ProjectPersonViewScreen(this.includedPeople, {Key? key})
-      : super(key: key);
-
-  @override
-  State<ProjectPersonViewScreen> createState() =>
-      _ProjectPersonViewScreenState();
-}
-
-class _ProjectPersonViewScreenState extends State<ProjectPersonViewScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.black54,
-          title: Padding(
-            padding: EdgeInsets.only(right: 45),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.timelapse, color: Colors.black),
-                const SizedBox(
-                  width: 30,
-                ),
-                Text(
-                  "REMINDER",
-                  style: GoogleFonts.barlow(color: Colors.black),
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                const Icon(
-                  Icons.timelapse,
-                  color: Colors.black,
-                ),
-               Icon(Icons.assistant_direction)
-              ],
-            ),
-          ),
-        ),
-        body: Column(children: [
-          Expanded(
-              child: Center(
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                      child: ListView.builder(
-                          itemCount: widget.includedPeople.length,
-                          itemBuilder: ((context, index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(children: [
-                                Text(
-                                  style: GoogleFonts.nunito(fontSize: 20),
-                                  "${widget.includedPeople[index].firstName} ${widget.includedPeople[index].lastName}  ",
-                                )
-                              ])))))))
-        ]));
-  }
-}
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({Key? key}) : super(key: key);
@@ -96,6 +34,12 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   Future<void> _initRetrieval() async {
     projectList = service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
     retrievedProjectList = await service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
+  }
+
+  addProject() async {
+    Project project= Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
+    service.addProject(project);
+    service.addProjectToUser(FirebaseAuth.instance.currentUser!.uid, project);
   }
 
   @override
@@ -210,8 +154,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                               shadowColor:
                                               MaterialStatePropertyAll<
                                                   Color>(Colors.redAccent)),
-                                          onPressed: () {
-                                            service.deleteProject(FirebaseAuth.instance.currentUser!.uid,
+                                          onPressed: () async {
+                                            await service.deleteProject(FirebaseAuth.instance.currentUser!.uid,
                                                 retrievedProjectList![index]);
                                             setState(() {
                                               _initRetrieval();
@@ -246,11 +190,16 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                               cursorColor: Colors.black,
                               controller: controller,
                             ),IconButton(onPressed: (() async {
-                              addProject();
-                              setState(() {
-                                _initRetrieval();
-                                controller.text="";
-                              });
+                              if(controller.text==""){
+
+                              }
+                              else {
+                                addProject();
+                                setState(() {
+                                  _initRetrieval();
+                                  controller.text = "";
+                                });
+                              }
                             }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
                           ],
                         ),
@@ -271,18 +220,21 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                   hintText: "Project's name",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.2),
-
                                   ),
                                   labelText: 'ADD A PROJECT'),
                               autocorrect: false,
                               cursorColor: Colors.black,
                               controller: controller,
                             ),IconButton(onPressed: (() async {
-                              addProject();
-                              setState(() {
-                                _initRetrieval();
-                                controller.text="";
-                              });
+                              if(controller.text==""){
+                              }
+                              else {
+                                addProject();
+                                setState(() {
+                                  _initRetrieval();
+                                  controller.text = "";
+                                });
+                              }
                             }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
                           ],
                         ),
@@ -301,9 +253,5 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     );
   }
 
-  addProject() async {
-    Project project= Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
-    service.addProject(project);
-    service.addProjectToUser(FirebaseAuth.instance.currentUser!.uid, project);
-  }
+
 }

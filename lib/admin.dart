@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remainder/login.dart';
+import 'package:remainder/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 

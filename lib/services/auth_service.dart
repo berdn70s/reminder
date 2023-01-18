@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:remainder/login.dart';
+import 'package:remainder/login_screen.dart';
 import 'package:remainder/models/person.dart';
 import 'package:remainder/services/database_service.dart';
 import 'package:flutter/material.dart';

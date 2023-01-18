@@ -4,7 +4,7 @@ import 'package:remainder/models/person.dart';
 class Task{
   String content;
   String description;
-  List<Person> whoToDo;
+  List<String> whoToDo;
   bool? isItDone;
   String? id;
 
@@ -32,8 +32,8 @@ class Task{
       : content = doc.data()!["content"],
         description = doc.data()!["description"],
         whoToDo = doc.data()?["whoToDo"] == null
-            ? null
-            : doc.data()?["whoToDo"].cast<Person>(),
+            ? ""
+            : doc.data()?["whoToDo"].cast<String>(),
         isItDone =doc.data()!["isItDone"],
         id=doc.id
   ;

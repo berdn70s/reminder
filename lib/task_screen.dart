@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:remainder/addPeopleToProject_screen.dart';
 import 'package:remainder/chat_screen.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
 import 'package:remainder/services/database_service.dart';
-import 'repository/project_friends.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 
 class TaskPage extends StatefulWidget {
@@ -26,16 +26,6 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
-  String taskOwnerToString() {
-    String owners = "";
-
-    for (int i = 0; i < ProjectFriendsRepository.friends.length; i++) {
-      owners =
-          "$owners --> ${ProjectFriendsRepository.friends[i].firstName} ${ProjectFriendsRepository.friends[i].lastName}\n";
-    }
-    return owners;
-  }
-
   bool whoToDoCheck = false;
   bool isChecked = false;
   bool isAnimDisplay = false;
@@ -45,6 +35,7 @@ class _TaskPageState extends State<TaskPage> {
   final _textController = TextEditingController();
   DatabaseService service = DatabaseService();
 
+
   @override
   void initState() {
     _textController.addListener(() {});
@@ -52,14 +43,25 @@ class _TaskPageState extends State<TaskPage> {
     _initRetrieval(widget.project);
   }
 
-  Future<void> _initRetrieval(Project project) async {
-    fulls = await getNameOfContributor(project);
-  }
 
   @override
   void dispose() {
     _textController.dispose();
+    _nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _initRetrieval(Project project) async {
+    fulls = await getNameOfContributor(project);
+  }
+
+  String whoToDoToString(Task taskData) {
+    String owners = "";
+    for (int i = 0; i <taskData.whoToDo.length ; i++) {
+      owners =
+      "$owners --> ${taskData.whoToDo[i]}\n";
+    }
+    return owners;
   }
 
   Future<List<String>> getNameOfContributor(Project projectData) async {
@@ -75,7 +77,7 @@ class _TaskPageState extends State<TaskPage> {
           .where("uid", isEqualTo: projectData.contributors[i])
           .get()
           .then((value) => value.docs[0].data()["lastName"]);
-      String full = firstName + lastName;
+      String full = firstName +" "+lastName;
       if (temp.contains(full)) {
         continue;
       } else {
@@ -86,6 +88,8 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future taskEditMenu(Task taskdata) {
+    _nameController.text=taskdata.content;
+    _textController.text=taskdata.description;
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -94,8 +98,8 @@ class _TaskPageState extends State<TaskPage> {
                 borderRadius: BorderRadius.all(Radius.circular(22.0))),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(child: Text('You are editing ${taskdata.content}')),
+              children: const [
+                Expanded(child: Text("Task Editing Page")),
                 Icon(Icons.people_outline)
               ],
             ),
@@ -134,7 +138,7 @@ class _TaskPageState extends State<TaskPage> {
                   SizedBox(
                     height: 30,
                   ),
-                  Text('CONTRIBUTORS'),
+                  Text('Select Who To DO'),
                   Expanded(
                     child: ListView.builder(
                         itemCount: fulls!.length,
@@ -142,20 +146,23 @@ class _TaskPageState extends State<TaskPage> {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                  fulls![i]),
+                              Text(fulls![i]),
                               RoundCheckBox(
                                 borderColor: Colors.black,
-                                isChecked: isChecked,
+                                isChecked: isChecked= taskdata.whoToDo.contains(fulls![i])? true : false,
                                 animationDuration:
                                     const Duration(milliseconds: 200),
                                 checkedColor: Colors.blueGrey,
                                 onTap: (bool? selected) {
                                   setState(() {
-                                    ProjectFriendsRepository
-                                            .friends[i].isDoingTask =
-                                        !ProjectFriendsRepository
-                                            .friends[i].isDoingTask!;
+                                    if(isChecked){
+                                         isChecked=!isChecked;
+                                         taskdata.whoToDo.remove(fulls![i]);
+                                         updateTask(taskdata);
+                                    }else {
+                                      taskdata.whoToDo.add(fulls![i]);
+                                      updateTask(taskdata);
+                                    }
                                   });
                                 },
                               )
@@ -201,23 +208,23 @@ class _TaskPageState extends State<TaskPage> {
                   child: Row(
                     children: const [
                       Text(
-                        ' Contributors:',
+                        ' Who To Do?:',
                         style: TextStyle(color: Colors.black, fontSize: 21),
                       ),
                     ],
                   ),
                 ),
                 Text(
-                  ' ',
-                  style: TextStyle(color: Colors.black, fontSize: 11),
+                  whoToDoToString(taskData),
+                  style: TextStyle(color: Colors.black, fontSize: 17),
                 ),
                 SizedBox(
                   height: 82,
                   child: Column(
-                    children: [
+                    children: const [
                       Text(
-                        taskOwnerToString(),
-                        style: TextStyle(fontSize: 17),
+                        "",
+                        style: TextStyle(fontSize: 3),
                       ),
                     ],
                   ),
@@ -232,7 +239,12 @@ class _TaskPageState extends State<TaskPage> {
                   ],
                 ),
                 Column(
-                  children: [Text(taskData.content)],
+                  children: [
+                    Text(
+                        taskData.description,
+                        style: TextStyle(color: Colors.black, fontSize: 17)
+                    )
+                  ],
                 ),
               ],
             ),
@@ -240,6 +252,33 @@ class _TaskPageState extends State<TaskPage> {
               TextButton(onPressed: submit, child: const Text('Submit')),
             ],
           ));
+
+  void submit() {
+    _textController.text = "";
+    Navigator.of(context).pop();
+  }
+
+  addTask() async {
+    await service.addTask(widget.project,
+        Task(_textController.text, '', [], isItDone: isChecked));
+    widget.tasks = await service.retrieveTasks(widget.project);
+    setState(() {});
+  }
+
+
+  updateTask(Task taskData) async {
+    taskData.content = _nameController.text;
+    taskData.description = _textController.text;
+    await service.updateTask(widget.project, taskData);
+    widget.tasks = await service.retrieveTasks(widget.project);
+    setState(() {});
+  }
+
+  deleteTask(Task taskData) async {
+    await service.deleteTask(widget.project, taskData);
+    widget.tasks = await service.retrieveTasks(widget.project);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -380,10 +419,14 @@ class _TaskPageState extends State<TaskPage> {
                                     size: 30,
                                     shadows: [Shadow(blurRadius: 20.2)]),
                                 onPressed: (() {
-                                  addTask();
-                                  setState(() {
-                                    _textController.text = "";
-                                  });
+                                  if(_textController.text==""){
+
+                                  }else {
+                                    addTask();
+                                    setState(() {
+                                      _textController.text = "";
+                                    });
+                                  }
                                 })),
                             border: const OutlineInputBorder()),
                         controller: _textController,
@@ -465,198 +508,6 @@ class _TaskPageState extends State<TaskPage> {
         )));
   }
 
-  void submit() {
-    _textController.text = "";
-    Navigator.of(context).pop();
-  }
 
-  addTask() async {
-    await service.addTask(widget.project,
-        Task(_textController.text, 'description', [], isItDone: isChecked));
-    widget.tasks = await service.retrieveTasks(widget.project);
-    setState(() {});
-  }
-
-
-  updateTask(Task taskData) async {
-    taskData.content = _nameController.text;
-    taskData.description = _textController.text;
-    await service.updateTask(widget.project, taskData);
-    widget.tasks = await service.retrieveTasks(widget.project);
-    setState(() {});
-  }
-
-  deleteTask(Task taskData) async {
-    await service.deleteTask(widget.project, taskData);
-    widget.tasks = await service.retrieveTasks(widget.project);
-    setState(() {});
-  }
-
-  Future descriptionCreater(Task taskData) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            backgroundColor: Colors.grey,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(22.0))),
-            content: SizedBox(
-              width: 100,
-              height: 100,
-              child: Center(
-                child: TextField(
-                  controller: _textController,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                      hintText: "Write down a description",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.2),
-                      ),
-                      labelText: 'Description'),
-                  autocorrect: false,
-                  cursorColor: Colors.black,
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    setState(() {});
-                    submit();
-                  },
-                  child: const Text('Submit')),
-            ],
-          ));
 }
 
-class TaskDetailsScreen extends StatefulWidget {
-  const TaskDetailsScreen({Key? key}) : super(key: key);
-
-  @override
-  State<TaskDetailsScreen> createState() => _TaskDetailsScreenState();
-}
-
-class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Details'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context,
-                MaterialPageRoute(builder: (context) => build(context)));
-          },
-          child: const Icon(Icons.arrow_back_ios),
-        ),
-      ),
-    );
-  }
-}
-
-class AddPeopleToProject extends StatefulWidget {
-  Project project;
-
-  AddPeopleToProject(this.project, {super.key});
-
-  @override
-  State<AddPeopleToProject> createState() => _AddPeopleToProjectState();
-}
-
-class _AddPeopleToProjectState extends State<AddPeopleToProject> {
-  bool isSubmitted = true;
-
-  DatabaseService service = DatabaseService();
-
-  TextEditingController textController = new TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    Widget animation = isSubmitted
-        ? Lottie.network(
-            'https://assets1.lottiefiles.com/packages/lf20_ojvdktpp.json')
-        : Lottie.network(
-            'https://assets7.lottiefiles.com/packages/lf20_ru9rYQ.json',
-            repeat: false);
-
-    return Material(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.black54, Colors.redAccent],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.arrow_back))
-              ],
-            ),
-            SizedBox(
-              height: 240,
-            ),
-            TextField(
-              controller: textController,
-              decoration: InputDecoration(
-                  constraints: const BoxConstraints(
-                      minHeight: 10,
-                      maxWidth: 320,
-                      maxHeight: 100,
-                      minWidth: 30),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.delete_forever_outlined),
-                    onPressed: () {
-                      textController.clear();
-                    },
-                  ),
-                  label: const Text('Email'),
-                  hintText: 'Enter a valid email adress ',
-                  border: const OutlineInputBorder()),
-              onChanged: (String a) {
-                setState(() {
-                  isSubmitted = true;
-                });
-
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: AnimatedButton(
-                  width: 140,
-                  height: 40,
-                  selectedTextColor: Colors.black87,
-                  selectedBackgroundColor: Colors.black12,
-                  isReverse: true,
-                  transitionType: TransitionType.BOTTOM_TO_TOP,
-                  borderRadius: 60,
-                  borderWidth: 2,
-                  text: 'SUBMIT',
-                  textStyle: GoogleFonts.nunito(
-                      fontSize: 16,
-                      letterSpacing: 1,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w300),
-                  onPress: () {
-                    setState(() {
-                      isSubmitted = false;
-                    });
-                    service.addUserToProject(
-                        textController.text, widget.project);
-                    Navigator.of(context).pop(widget.project);
-                  }),
-            ),
-            SizedBox(height: 200, width: 400, child: animation)
-          ],
-        ),
-      ),
-    );
-  }
-}

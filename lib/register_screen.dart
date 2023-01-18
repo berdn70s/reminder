@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/login.dart';
+import 'package:remainder/login_screen.dart';
 import 'package:remainder/services/auth_service.dart';
 
 class Register extends StatefulWidget {
@@ -37,8 +37,6 @@ class _RegisterState extends State<Register> {
         emailController.text,
         passwordController.text,
         checkingPasswordController.text,context);
-
-
   }
 
   @override
