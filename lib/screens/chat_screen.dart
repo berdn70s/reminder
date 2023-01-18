@@ -59,6 +59,8 @@ class  _ChatPageState extends State<ChatPage> {
     String name = await getNameOfContributor(FirebaseAuth.instance.currentUser!.uid);
     Message message = Message(text,name, FirebaseAuth.instance.currentUser!.uid);
     await service.addMessage(project, message);
+    await service.updateProject(project);
+    await _initRetrieval();
     setState(() {
       textEditingController.clear();
       wholeMessages.add(message);
