@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +10,15 @@ class ChatPage extends StatefulWidget {
   Project project;
 
   ChatPage(
-      this.project, {
-        Key? key,
-      }) : super(key: key);
+    this.project, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
-class  _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage> {
   late final Project project;
   List<Message> wholeMessages = [];
 
@@ -40,24 +39,25 @@ class  _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    project=widget.project;
+    project = widget.project;
     textEditingController.addListener(() {
-      setState(() {
-      });
+      setState(() {});
     });
     _initRetrieval();
     super.initState();
   }
 
   Future<void> _initRetrieval() async {
-    wholeMessages= await service.retrieveMessage(project);
+    wholeMessages = await service.retrieveMessage(project);
   }
-
 
   Future<void> SendMessage() async {
     String text = textEditingController.value.text;
-    String name = await getNameOfContributor(FirebaseAuth.instance.currentUser!.uid);
-    Message message = Message(text,name, FirebaseAuth.instance.currentUser!.uid);
+    String name =
+        await getNameOfContributor(FirebaseAuth.instance.currentUser!.uid);
+    var time=DateTime.now().millisecondsSinceEpoch;
+    Message message =
+        Message(text, name, FirebaseAuth.instance.currentUser!.uid,time);
     await service.addMessage(project, message);
     await service.updateProject(project);
     await _initRetrieval();
@@ -68,12 +68,12 @@ class  _ChatPageState extends State<ChatPage> {
   }
 
   Future<String> getNameOfContributor(String id) async {
-      String firstName = await FirebaseFirestore.instance
-          .collection("users")
-          .where("uid", isEqualTo: id)
-          .get()
-          .then((value) => value.docs[0].data()["firstName"]);
-      return firstName;
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    return firstName;
   }
 
   @override
@@ -136,49 +136,65 @@ class  _ChatPageState extends State<ChatPage> {
         child: Column(
           children: <Widget>[
             Expanded(
-              child: ListView.builder(
-                itemCount: wholeMessages.length,
-                itemBuilder: (context, i) {
-                  if (wholeMessages[i].senderID != FirebaseAuth.instance.currentUser!.uid) {
-                    return Row(
-                      children: <Widget>[
-                        CircleAvatar(
-                            child: Text(wholeMessages[i].senderName[0]),
-                            backgroundColor: Colors.black26),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: 40,
-                          child: BubbleNormal(
-                            isSender: false,
-                            text: wholeMessages[i].content,
-                            color: Colors.blueGrey,
-                            tail: true,
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Row(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: 40,
-                          child: BubbleNormal(
-                            sent: true,
-                            isSender: true,
-                            text: wholeMessages[i].content,
-                            color: Colors.orange,
-                            tail: true,
-                          ),
-                        ),
-                        CircleAvatar(
-                            child: Text(wholeMessages[i].senderName[0]),
-                            backgroundColor: Colors.black26),
-                      ],
-                    );
-                  }
-                },
-              ),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("projects")
+                      .doc(project.id)
+                      .collection("messages").orderBy("time")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, i) {
+                          var ds = snapshot.data!.docs[i];
+                          if (ds["senderID"] !=
+                              FirebaseAuth.instance.currentUser!.uid) {
+                            return Row(
+                              children: <Widget>[
+                                CircleAvatar(
+                                    backgroundColor: Colors.black26,
+                                    child: Text(ds["senderName"][0])),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  height: 40,
+                                  child: BubbleNormal(
+                                    isSender: false,
+                                    text: ds["content"],
+                                    color: Colors.blueGrey,
+                                    tail: true,
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Row(
+                              children: <Widget>[
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  height: 40,
+                                  child: BubbleNormal(
+                                    sent: true,
+                                    isSender: true,
+                                    text: ds["content"],
+                                    color: Colors.orange,
+                                    tail: true,
+                                  ),
+                                ),
+                                CircleAvatar(
+                                    backgroundColor: Colors.black26,
+                                    child: Text(ds["senderName"][0])),
+                              ],
+                            );
+                          }
+                        },
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
             ),
             Divider(height: 2.0),
             textInput

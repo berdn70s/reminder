@@ -41,7 +41,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
 
   addProject() async {
     Project project =
-        Project(controller.text, [FirebaseAuth.instance.currentUser!.uid],[]);
+        Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
     service.addProject(project);
     service.addProjectToUser(FirebaseAuth.instance.currentUser!.uid, project);
   }
