@@ -1,48 +1,77 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:remainder/models/project.dart';
+import 'package:remainder/services/database_service.dart';
 import '../models/message.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 
 class ChatPage extends StatefulWidget {
+  Project project;
+
+  ChatPage(
+      this.project, {
+        Key? key,
+      }) : super(key: key);
+
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class  _ChatPageState extends State<ChatPage> {
-  List<Message> _userMessages = [];
-  List<Message> _receivedMessages = [];
+  late final Project project;
   List<Message> wholeMessages = [];
 
-  Message message1 = Message('Hello Im BERDAN', "Berdan", 'BERDAN ID');
-  Message message2 = Message('BEN BERDOS', "Berdan", 'BERDAN ID');
-  Message message3 = Message('BEN HAMZA', "HAMZA", 'HAMZA ID');
-  Message message4 = Message('BEN SEMIH', "SEMIH", 'SEMIH ID');
+  DatabaseService service = DatabaseService();
   TextEditingController textEditingController = TextEditingController();
   ScrollController scrollController = ScrollController();
+
   bool reverse = true;
   bool enableButton = false;
 
   @override
-  void initState() {
-    _userMessages = <Message>[];
-    _receivedMessages = <Message>[];
-    _userMessages.add(message1);
-    _userMessages.add(message2);
-    _receivedMessages.add(message3);
-    _receivedMessages.add(message4);
-    wholeMessages = _userMessages + _receivedMessages;
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
+    textEditingController.dispose();
+  }
 
-    textEditingController = TextEditingController();
-    scrollController = ScrollController();
+  @override
+  void initState() {
+    project=widget.project;
+    textEditingController.addListener(() {
+      setState(() {
+      });
+    });
+    _initRetrieval();
     super.initState();
   }
 
-  void SendMessage() {
-    var text = textEditingController.value.text;
-    Message message = Message(text, 'Berdan', 'BERDAN ID');
-    textEditingController.clear();
+  Future<void> _initRetrieval() async {
+    wholeMessages= await service.retrieveMessage(project);
+  }
+
+
+  Future<void> SendMessage() async {
+    String text = textEditingController.value.text;
+    String name = await getNameOfContributor(FirebaseAuth.instance.currentUser!.uid);
+    Message message = Message(text,name, FirebaseAuth.instance.currentUser!.uid);
+    await service.addMessage(project, message);
     setState(() {
+      textEditingController.clear();
       wholeMessages.add(message);
     });
+  }
+
+  Future<String> getNameOfContributor(String id) async {
+      String firstName = await FirebaseFirestore.instance
+          .collection("users")
+          .where("uid", isEqualTo: id)
+          .get()
+          .then((value) => value.docs[0].data()["firstName"]);
+      return firstName;
   }
 
   @override
@@ -108,7 +137,7 @@ class  _ChatPageState extends State<ChatPage> {
               child: ListView.builder(
                 itemCount: wholeMessages.length,
                 itemBuilder: (context, i) {
-                  if (wholeMessages[i].senderID != 'BERDAN ID') {
+                  if (wholeMessages[i].senderID != FirebaseAuth.instance.currentUser!.uid) {
                     return Row(
                       children: <Widget>[
                         CircleAvatar(

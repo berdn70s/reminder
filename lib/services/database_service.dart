@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:remainder/models/message.dart';
 import 'package:remainder/models/person.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
@@ -127,4 +128,29 @@ class DatabaseService {
         .map((docSnapshot) => Task.fromDocumentSnapshot(docSnapshot))
         .toList();
   }
+
+
+  Future<void> addMessage(Project project,Message messageData) async {
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("messages")
+        .doc()
+        .set(messageData.toMap());
+  }
+
+
+  Future<List<Message>> retrieveMessage(Project projectData) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _db
+        .collection("projects")
+        .doc(projectData.id)
+        .collection("messages")
+        .get();
+    return snapshot.docs
+        .map((docSnapshot) => Message.fromDocumentSnapshot(docSnapshot))
+        .toList();
+  }
+
+
+
 }

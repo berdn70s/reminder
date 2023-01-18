@@ -317,7 +317,7 @@ class _TaskPageState extends State<TaskPage> {
                 child: IconButton(
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ChatPage()));
+                          MaterialPageRoute(builder: (context) => ChatPage(widget.project)));
                     },
                     icon: Icon(
                       Icons.chat,
