@@ -55,16 +55,12 @@ class _ChatPageState extends State<ChatPage> {
     String text = textEditingController.value.text;
     String name =
         await getNameOfContributor(FirebaseAuth.instance.currentUser!.uid);
-    var time=DateTime.now().millisecondsSinceEpoch;
+    var time = DateTime.now().millisecondsSinceEpoch;
     Message message =
-        Message(text, name, FirebaseAuth.instance.currentUser!.uid,time);
+        Message(text, name, FirebaseAuth.instance.currentUser!.uid, time);
     await service.addMessage(project, message);
     await service.updateProject(project);
     await _initRetrieval();
-    setState(() {
-      textEditingController.clear();
-      wholeMessages.add(message);
-    });
   }
 
   Future<String> getNameOfContributor(String id) async {
@@ -105,7 +101,10 @@ class _ChatPageState extends State<ChatPage> {
                   Icons.send,
                 ),
                 disabledColor: Colors.grey,
-                onPressed: SendMessage,
+                onPressed: (){
+                  SendMessage();
+                  textEditingController.text="";
+                },
               )
             : IconButton(
                 color: Colors.blue,
@@ -140,7 +139,8 @@ class _ChatPageState extends State<ChatPage> {
                   stream: FirebaseFirestore.instance
                       .collection("projects")
                       .doc(project.id)
-                      .collection("messages").orderBy("time")
+                      .collection("messages")
+                      .orderBy("time")
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {

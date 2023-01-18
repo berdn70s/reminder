@@ -76,6 +76,16 @@ class DatabaseService {
           ds.reference.delete();
         }
       });
+      await _db
+          .collection("projects")
+          .doc(projectData.id)
+          .collection("messages")
+          .get()
+          .then((value) {
+        for (var ds in value.docs) {
+          ds.reference.delete();
+        }
+      });
     }
   }
 
