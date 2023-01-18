@@ -35,14 +35,12 @@ class _TaskPageState extends State<TaskPage> {
   final _textController = TextEditingController();
   DatabaseService service = DatabaseService();
 
-
   @override
   void initState() {
     _textController.addListener(() {});
     super.initState();
     _initRetrieval(widget.project);
   }
-
 
   @override
   void dispose() {
@@ -57,9 +55,8 @@ class _TaskPageState extends State<TaskPage> {
 
   String whoToDoToString(Task taskData) {
     String owners = "";
-    for (int i = 0; i <taskData.whoToDo.length ; i++) {
-      owners =
-      "$owners --> ${taskData.whoToDo[i]}\n";
+    for (int i = 0; i < taskData.whoToDo.length; i++) {
+      owners = "$owners --> ${taskData.whoToDo[i]}\n";
     }
     return owners;
   }
@@ -77,7 +74,7 @@ class _TaskPageState extends State<TaskPage> {
           .where("uid", isEqualTo: projectData.contributors[i])
           .get()
           .then((value) => value.docs[0].data()["lastName"]);
-      String full = firstName +" "+lastName;
+      String full = firstName + " " + lastName;
       if (temp.contains(full)) {
         continue;
       } else {
@@ -88,100 +85,103 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future taskEditMenu(Task taskdata) {
-    _nameController.text=taskdata.content;
-    _textController.text=taskdata.description;
+    _nameController.text = taskdata.content;
+    _textController.text = taskdata.description;
     return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            backgroundColor: Colors.grey,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(22.0))),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Expanded(child: Text("Task Editing Page")),
-                Icon(Icons.people_outline)
-              ],
-            ),
-            content: SizedBox(
-              width: 300,
-              height: 300,
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _nameController,
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: 'Task Name',
-                      hintText: "Write down a name",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.2),
-                      ),
-                    ),
-                    autocorrect: false,
-                    cursorColor: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _textController,
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: 'DESCRIPTION',
-                      hintText: "Write down a description",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.2),
-                      ),
-                    ),
-                    autocorrect: false,
-                    cursorColor: Colors.black,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Text('Select Who To DO'),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: fulls!.length,
-                        itemBuilder: (context, i) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(fulls![i]),
-                              RoundCheckBox(
-                                borderColor: Colors.black,
-                                isChecked: isChecked= taskdata.whoToDo.contains(fulls![i])? true : false,
-                                animationDuration:
-                                    const Duration(milliseconds: 200),
-                                checkedColor: Colors.blueGrey,
-                                onTap: (bool? selected) {
-                                  setState(() {
-                                    if(isChecked){
-                                         isChecked=!isChecked;
-                                         taskdata.whoToDo.remove(fulls![i]);
-                                         updateTask(taskdata);
-                                    }else {
-                                      taskdata.whoToDo.add(fulls![i]);
-                                      updateTask(taskdata);
-                                    }
-                                  });
-                                },
-                              )
-                            ],
-                          );
-                        }),
-                  ),
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.grey,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(22.0))),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  Expanded(child: Text("Task Editing Page")),
+                  Icon(Icons.people_outline)
                 ],
               ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    updateTask(taskdata);
-                    submit();
-                  },
-                  child: const Text('Submit')),
-            ],
-          ));
+              content: SizedBox(
+                width: 300,
+                height: 300,
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _nameController,
+                      style: const TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        labelText: 'Task Name',
+                        hintText: "Write down a name",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.2),
+                        ),
+                      ),
+                      autocorrect: false,
+                      cursorColor: Colors.black,
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _textController,
+                      style: const TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        labelText: 'DESCRIPTION',
+                        hintText: "Write down a description",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.2),
+                        ),
+                      ),
+                      autocorrect: false,
+                      cursorColor: Colors.black,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text('Select Who To DO'),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: fulls!.length,
+                          itemBuilder: (context, i) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(fulls![i]),
+                                RoundCheckBox(
+                                  borderColor: Colors.black,
+                                  isChecked: isChecked =
+                                      taskdata.whoToDo.contains(fulls![i])
+                                          ? true
+                                          : false,
+                                  animationDuration:
+                                      const Duration(milliseconds: 200),
+                                  checkedColor: Colors.blueGrey,
+                                  onTap: (bool? selected) {
+                                    setState(() {
+                                      if (isChecked) {
+                                        isChecked = !isChecked;
+                                        taskdata.whoToDo.remove(fulls![i]);
+                                        updateTask(taskdata);
+                                      } else {
+                                        taskdata.whoToDo.add(fulls![i]);
+                                        updateTask(taskdata);
+                                      }
+                                    });
+                                  },
+                                )
+                              ],
+                            );
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      updateTask(taskdata);
+                      submit();
+                    },
+                    child: const Text('Submit')),
+              ],
+            ));
   }
 
   Future popUp(Task taskData) => showDialog(
@@ -240,10 +240,8 @@ class _TaskPageState extends State<TaskPage> {
                 ),
                 Column(
                   children: [
-                    Text(
-                        taskData.description,
-                        style: TextStyle(color: Colors.black, fontSize: 17)
-                    )
+                    Text(taskData.description,
+                        style: TextStyle(color: Colors.black, fontSize: 17))
                   ],
                 ),
               ],
@@ -265,7 +263,6 @@ class _TaskPageState extends State<TaskPage> {
     setState(() {});
   }
 
-
   updateTask(Task taskData) async {
     taskData.content = _nameController.text;
     taskData.description = _textController.text;
@@ -277,7 +274,7 @@ class _TaskPageState extends State<TaskPage> {
   deleteTask(Task taskData) async {
     await service.deleteTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
-    setState(()  {});
+    setState(() {});
   }
 
   @override
@@ -419,9 +416,8 @@ class _TaskPageState extends State<TaskPage> {
                                     size: 30,
                                     shadows: [Shadow(blurRadius: 20.2)]),
                                 onPressed: (() {
-                                  if(_textController.text==""){
-
-                                  }else {
+                                  if (_textController.text == "") {
+                                  } else {
                                     addTask();
                                     setState(() {
                                       _textController.text = "";
@@ -476,9 +472,9 @@ class _TaskPageState extends State<TaskPage> {
                                         IconButton(
                                             iconSize: 20,
                                             onPressed: () async {
-                                              await _initRetrieval(widget.project);
-                                              taskEditMenu(
-                                                  widget.tasks[index]);
+                                              await _initRetrieval(
+                                                  widget.project);
+                                              taskEditMenu(widget.tasks[index]);
                                             },
                                             icon: const Icon(Icons.edit)),
                                         IconButton(
@@ -507,7 +503,4 @@ class _TaskPageState extends State<TaskPage> {
           ),
         )));
   }
-
-
 }
-

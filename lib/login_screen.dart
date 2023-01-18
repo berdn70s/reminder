@@ -17,7 +17,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  AuthService authService=AuthService();
+  AuthService authService = AuthService();
   bool visibilityCheck = true;
 
   @override
@@ -26,19 +26,17 @@ class _LoginState extends State<Login> {
     passwordController.dispose();
     super.dispose();
   }
+
   signIn() async {
     try {
-      await authService.signIn(emailController.text, passwordController.text,context);
-      if(!mounted){
-
-      }
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>  ProjectsScreen()));
-
+      await authService.signIn(
+          emailController.text, passwordController.text, context);
+      if (!mounted) {}
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ProjectsScreen()));
     } on FirebaseAuthException catch (error) {
       Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
     }
-
-
   }
 
   @override
@@ -57,29 +55,29 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      elevation: 0,
-      backgroundColor: Colors.black54,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.timelapse, color: Colors.black),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            "REMINDER",
-            style: GoogleFonts.barlow(color: Colors.black),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          const Icon(
-            Icons.timelapse,
-            color: Colors.black,
-          )
-        ],
+        elevation: 0,
+        backgroundColor: Colors.black54,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.timelapse, color: Colors.black),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              "REMINDER",
+              style: GoogleFonts.barlow(color: Colors.black),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            const Icon(
+              Icons.timelapse,
+              color: Colors.black,
+            )
+          ],
+        ),
       ),
-    ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -162,15 +160,17 @@ class _LoginState extends State<Login> {
                   width: 150,
                   height: 35,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: emailController.text.isEmpty ||
-                        passwordController.text.isEmpty
+                            passwordController.text.isEmpty
                         ? null
                         : signIn,
                     child: Text(
                       'Login',
                       style: GoogleFonts.arya(
-                          textStyle: const TextStyle(color: Colors.black, fontSize: 20)),
+                          textStyle: const TextStyle(
+                              color: Colors.black, fontSize: 20)),
                     ),
                   ),
                 ),
@@ -181,19 +181,25 @@ class _LoginState extends State<Login> {
                   width: 150,
                   height: 35,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: () {
-                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ChangePassword()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ChangePassword()));
                     },
                     child: Text('Forgot Password',
                         style: GoogleFonts.arya(
-                          textStyle: const TextStyle(color: Colors.black, fontSize: 17),
+                          textStyle: const TextStyle(
+                              color: Colors.black, fontSize: 17),
                         )),
                   ),
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Register()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Register()));
                     },
                     child: const Text('Create an Account',
                         style: TextStyle(color: Colors.grey, fontSize: 15)))

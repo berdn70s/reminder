@@ -32,10 +32,10 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
   Widget build(BuildContext context) {
     Widget animation = isSubmitted
         ? Lottie.network(
-        'https://assets1.lottiefiles.com/packages/lf20_ojvdktpp.json')
+            'https://assets1.lottiefiles.com/packages/lf20_ojvdktpp.json')
         : Lottie.network(
-        'https://assets7.lottiefiles.com/packages/lf20_ru9rYQ.json',
-        repeat: false);
+            'https://assets7.lottiefiles.com/packages/lf20_ru9rYQ.json',
+            repeat: false);
 
     return Material(
       child: Container(
@@ -44,7 +44,7 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
               colors: [Colors.black54, Colors.redAccent],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
-         ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -82,7 +82,6 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
                 setState(() {
                   isSubmitted = true;
                 });
-
               },
             ),
             Padding(

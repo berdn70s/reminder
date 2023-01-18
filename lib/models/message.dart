@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Message{
+class Message {
   String content;
   String senderName;
   String senderID;
 
-   Message(this.content, this.senderName, this.senderID);
+  Message(this.content, this.senderName, this.senderID);
 
   Map<String, dynamic> toMap() {
     return {
@@ -23,6 +23,5 @@ class Message{
   Message.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : content = doc.data()!["content"],
         senderName = doc.data()!["senderName"],
-        senderID =doc.data()!["senderID"];
-
+        senderID = doc.data()!["senderID"];
 }

@@ -6,12 +6,13 @@ class Person {
   String firstName;
   String lastName;
   String email;
-   String uid;
+  String uid;
   List<Project> projects;
   bool? isDoingTask = false;
   final _user = FirebaseAuth.instance.currentUser;
 
-  Person(this.firstName, this.lastName, this.email, this.uid,this.projects, {this.isDoingTask});
+  Person(this.firstName, this.lastName, this.email, this.uid, this.projects,
+      {this.isDoingTask});
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,14 +28,14 @@ class Person {
       : firstName = peopleMap["firstName"],
         lastName = peopleMap["lastName"],
         email = peopleMap["email"],
-        projects=peopleMap["projects"],
+        projects = peopleMap["projects"],
         uid = peopleMap["uid"];
 
   Person.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : firstName = doc.data()!["firstName"],
         lastName = doc.data()!["lastName"],
         email = doc.data()!["email"],
-        projects=doc.data()?["projects"] == null
+        projects = doc.data()?["projects"] == null
             ? null
             : doc.data()?["projects"].cast<Project>(),
         uid = doc.data()!["uid"];

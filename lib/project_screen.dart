@@ -32,12 +32,15 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   Future<void> _initRetrieval() async {
-    projectList = service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
-    retrievedProjectList = await service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
+    projectList =
+        service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
+    retrievedProjectList =
+        await service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
   }
 
   addProject() async {
-    Project project= Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
+    Project project =
+        Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
     service.addProject(project);
     service.addProjectToUser(FirebaseAuth.instance.currentUser!.uid, project);
   }
@@ -45,13 +48,17 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         backgroundColor: Colors.black54,
         title: Padding(
-          padding: const  EdgeInsets.only(left: 49),
+          padding: const EdgeInsets.only(left: 49),
           child: Row(
-            children: [SizedBox(width: 65,),
+            children: [
+              SizedBox(
+                width: 65,
+              ),
               const Icon(Icons.timelapse, color: Colors.black),
               const SizedBox(
                 width: 10,
@@ -66,11 +73,17 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               const Icon(
                 Icons.timelapse,
                 color: Colors.black,
-              ), SizedBox(width: 54,),
-              IconButton(onPressed:(){
-                FirebaseAuth.instance.signOut();
-                Navigator.pop(context);}, icon: Icon(Icons.person_off , color: Colors.black45),)
-
+              ),
+              SizedBox(
+                width: 54,
+              ),
+              IconButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.person_off, color: Colors.black45),
+              )
             ],
           ),
         ),
@@ -96,9 +109,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                         child: ListView.separated(
                             itemCount: retrievedProjectList!.length,
                             separatorBuilder: (context, index) =>
-                            const SizedBox(
-                              height: 10,
-                            ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
                             itemBuilder: (context, index) {
                               return Column(
                                 children: [
@@ -108,9 +121,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                       decoration: BoxDecoration(
                                           color: Colors.red,
                                           borderRadius:
-                                          BorderRadius.circular(16.0)),
+                                              BorderRadius.circular(16.0)),
                                       padding:
-                                      const EdgeInsets.only(right: 28.0),
+                                          const EdgeInsets.only(right: 28.0),
                                       alignment: AlignmentDirectional.centerEnd,
                                       child: const Text(
                                         "DELETE",
@@ -119,43 +132,45 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                     ),
                                     direction: DismissDirection.endToStart,
                                     resizeDuration:
-                                    const Duration(milliseconds: 200),
+                                        const Duration(milliseconds: 200),
                                     key: UniqueKey(),
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: const Color.fromARGB(
                                               255, 83, 80, 80),
                                           borderRadius:
-                                          BorderRadius.circular(16.0)),
+                                              BorderRadius.circular(16.0)),
                                       child: ListTile(
                                         onTap: () async {
                                           List<Task> tasks =
-                                          await service.retrieveTasks(
-                                              retrievedProjectList![index]);
+                                              await service.retrieveTasks(
+                                                  retrievedProjectList![index]);
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       TaskPage(
                                                           tasks,
                                                           retrievedProjectList![
-                                                          index])));
+                                                              index])));
                                         },
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(4.0),
+                                              BorderRadius.circular(4.0),
                                         ),
                                         title: Text(retrievedProjectList![index]
                                             .projectName),
                                         trailing: ElevatedButton(
                                           style: const ButtonStyle(
                                               backgroundColor:
-                                              MaterialStatePropertyAll<
-                                                  Color>(Colors.blueGrey),
+                                                  MaterialStatePropertyAll<
+                                                      Color>(Colors.blueGrey),
                                               shadowColor:
-                                              MaterialStatePropertyAll<
-                                                  Color>(Colors.redAccent)),
+                                                  MaterialStatePropertyAll<
+                                                      Color>(Colors.redAccent)),
                                           onPressed: () async {
-                                            await service.deleteProject(FirebaseAuth.instance.currentUser!.uid,
+                                            await service.deleteProject(
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid,
                                                 retrievedProjectList![index]);
                                             setState(() {
                                               _initRetrieval();
@@ -175,32 +190,40 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             TextField(
                               style: const TextStyle(color: Colors.black),
-                              decoration: InputDecoration(constraints: BoxConstraints.loose(const Size.fromRadius(140),),
+                              decoration: InputDecoration(
+                                  constraints: BoxConstraints.loose(
+                                    const Size.fromRadius(140),
+                                  ),
                                   hintText: "Project's name",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.2),
-
                                   ),
                                   labelText: 'ADD A PROJECT'),
                               autocorrect: false,
                               cursorColor: Colors.black,
                               controller: controller,
-                            ),IconButton(onPressed: (() async {
-                              if(controller.text==""){
-
-                              }
-                              else {
-                                addProject();
-                                setState(() {
-                                  _initRetrieval();
-                                  controller.text = "";
-                                });
-                              }
-                            }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
+                            ),
+                            IconButton(
+                                onPressed: (() async {
+                                  if (controller.text == "") {
+                                  } else {
+                                    addProject();
+                                    setState(() {
+                                      _initRetrieval();
+                                      controller.text = "";
+                                    });
+                                  }
+                                }),
+                                icon: const Icon(
+                                  Icons.add_circle_outlined,
+                                  size: 35,
+                                  color: Colors.grey,
+                                ))
                           ],
                         ),
                       )
@@ -212,11 +235,15 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             TextField(
                               style: const TextStyle(color: Colors.black),
-                              decoration: InputDecoration(constraints: BoxConstraints.loose(const Size.fromRadius(140),),
+                              decoration: InputDecoration(
+                                  constraints: BoxConstraints.loose(
+                                    const Size.fromRadius(140),
+                                  ),
                                   hintText: "Project's name",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.2),
@@ -225,17 +252,23 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                               autocorrect: false,
                               cursorColor: Colors.black,
                               controller: controller,
-                            ),IconButton(onPressed: (() async {
-                              if(controller.text==""){
-                              }
-                              else {
-                                addProject();
-                                setState(() {
-                                  _initRetrieval();
-                                  controller.text = "";
-                                });
-                              }
-                            }), icon: const Icon(Icons.add_circle_outlined , size: 35,color: Colors.grey,))
+                            ),
+                            IconButton(
+                                onPressed: (() async {
+                                  if (controller.text == "") {
+                                  } else {
+                                    addProject();
+                                    setState(() {
+                                      _initRetrieval();
+                                      controller.text = "";
+                                    });
+                                  }
+                                }),
+                                icon: const Icon(
+                                  Icons.add_circle_outlined,
+                                  size: 35,
+                                  color: Colors.grey,
+                                ))
                           ],
                         ),
                       )
@@ -249,9 +282,6 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
           ),
         ),
       ),
-
     );
   }
-
-
 }

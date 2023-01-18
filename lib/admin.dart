@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:remainder/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'REMINDER',
-       debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.brown,
       ),
@@ -39,6 +38,3 @@ class _MyHomePageState extends State<MyHomePage> {
     return const Login();
   }
 }
-
-
-

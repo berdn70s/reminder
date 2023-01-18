@@ -36,7 +36,8 @@ class _RegisterState extends State<Register> {
         lastNameController.text,
         emailController.text,
         passwordController.text,
-        checkingPasswordController.text,context);
+        checkingPasswordController.text,
+        context);
   }
 
   @override
@@ -52,7 +53,7 @@ class _RegisterState extends State<Register> {
       setState(() {});
     });
 
-     passwordController.addListener(() {
+    passwordController.addListener(() {
       setState(() {});
     });
 
@@ -108,8 +109,7 @@ class _RegisterState extends State<Register> {
                   ),
                   child: Text(
                     "Sign UP",
-                    style: TextStyle(
-                        fontSize: 35, fontStyle: FontStyle.normal),
+                    style: TextStyle(fontSize: 35, fontStyle: FontStyle.normal),
                   ),
                 ),
               ),
@@ -242,8 +242,8 @@ class _RegisterState extends State<Register> {
                   child: Text(
                     'Sign UP',
                     style: GoogleFonts.arya(
-                        textStyle: const TextStyle(
-                            color: Colors.black, fontSize: 22)),
+                        textStyle:
+                            const TextStyle(color: Colors.black, fontSize: 22)),
                   ),
                 ),
               ),
@@ -252,8 +252,8 @@ class _RegisterState extends State<Register> {
               ),
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Login()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const Login()));
                   }
                   //Navigated to login page.
                   ,

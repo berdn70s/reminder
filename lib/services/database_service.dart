@@ -15,7 +15,7 @@ class DatabaseService {
         .set(projectData.toMap());
   }
 
-   Future<void> addUser(Person person) async {
+  Future<void> addUser(Person person) async {
     await _db.collection("users").doc(person.uid).set(person.toMap());
   }
 
@@ -49,14 +49,14 @@ class DatabaseService {
         .update(projectData.toMap());
   }
 
-  Future<void> deleteProject(String id,Project projectData) async {
+  Future<void> deleteProject(String id, Project projectData) async {
     await _db.collection("users").doc(id).update({
       'projects': FieldValue.arrayRemove([projectData.id])
     });
     await _db.collection("projects").doc(projectData.id).update({
-      'contributors':FieldValue.arrayRemove([id])
+      'contributors': FieldValue.arrayRemove([id])
     });
-    if(projectData.contributors.length==1){
+    if (projectData.contributors.length == 1) {
       await _db.collection("projects").doc(projectData.id).delete();
     }
   }
@@ -72,7 +72,8 @@ class DatabaseService {
   }
 
   Future<void> addTask(Project project, Task taskData) async {
-    taskData.id = _db.collection("projects").doc(project.id).collection("tasks").doc().id;
+    taskData.id =
+        _db.collection("projects").doc(project.id).collection("tasks").doc().id;
     await _db
         .collection("projects")
         .doc(project.id)
@@ -98,7 +99,6 @@ class DatabaseService {
         .doc(taskData.id)
         .delete();
   }
-
 
   Future<List<Task>> retrieveTasks(Project projectData) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await _db

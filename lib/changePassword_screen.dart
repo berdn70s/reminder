@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,7 +15,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool visibilityCheck = true;
 
   @override
-   void dispose() {
+  void dispose() {
     emailController.dispose();
     super.dispose();
   }
@@ -138,7 +138,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: Text(
                     'Send Request',
                     style: GoogleFonts.arya(
-                        textStyle: const TextStyle(color: Colors.black, fontSize: 20)),
+                        textStyle:
+                            const TextStyle(color: Colors.black, fontSize: 20)),
                   ),
                 )
               ],
