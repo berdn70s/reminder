@@ -15,14 +15,26 @@ class DatabaseService {
         .collection("projects")
         .doc(projectData.id)
         .set(projectData.toMap());
-  }
 
-  Future<void> addChat(Project projectData) async {
-    projectData.id = _db.collection("projects").doc().id;
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    String lastName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value.docs[0].data()["lastName"]);
+    String full = firstName + " " + lastName;
+
+    Message message= Message("${full} is created this project.", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
     await _db
         .collection("projects")
         .doc(projectData.id)
-        .set(projectData.toMap());
+        .collection("messages")
+        .doc()
+        .set(message.toMap());
   }
 
   Future<void> addUser(Person person) async {

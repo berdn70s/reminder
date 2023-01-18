@@ -16,13 +16,13 @@ class TaskPage extends StatefulWidget {
   String? email;
 
   TaskPage(
-    this.tasks,
-    this.project, {
-    Key? key,
-  }) : super(key: key);
+      this.tasks,
+      this.project, {
+        Key? key,
+      }) : super(key: key);
 
   @override
-   State<TaskPage> createState() => _TaskPageState();
+  State<TaskPage> createState() => _TaskPageState();
 }
 
 class _TaskPageState extends State<TaskPage> {
@@ -85,171 +85,172 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future taskEditMenu(Task taskdata) {
+    _initRetrieval(widget.project);
     _nameController.text = taskdata.content;
     _textController.text = taskdata.description;
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              backgroundColor: Colors.grey,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(22.0))),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  Expanded(child: Text("Task Editing Page")),
-                  Icon(Icons.people_outline)
-                ],
-              ),
-              content: SizedBox(
-                width: 300,
-                height: 300,
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _nameController,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        labelText: 'Task Name',
-                        hintText: "Write down a name",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.2),
-                        ),
-                      ),
-                      autocorrect: false,
-                      cursorColor: Colors.black,
+          backgroundColor: Colors.grey,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const [
+              Expanded(child: Text("Task Editing Page")),
+              Icon(Icons.people_outline)
+            ],
+          ),
+          content: SizedBox(
+            width: 300,
+            height: 300,
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nameController,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Task Name',
+                    hintText: "Write down a name",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.2),
                     ),
-                    SizedBox(height: 10),
-                    TextField(
-                      controller: _textController,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        labelText: 'DESCRIPTION',
-                        hintText: "Write down a description",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.2),
-                        ),
-                      ),
-                      autocorrect: false,
-                      cursorColor: Colors.black,
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Text('Select Who To DO'),
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: fulls!.length,
-                          itemBuilder: (context, i) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(fulls![i]),
-                                RoundCheckBox(
-                                  borderColor: Colors.black,
-                                  isChecked: isChecked =
-                                      taskdata.whoToDo.contains(fulls![i])
-                                          ? true
-                                          : false,
-                                  animationDuration:
-                                      const Duration(milliseconds: 200),
-                                  checkedColor: Colors.blueGrey,
-                                  onTap: (bool? selected) {
-                                    setState(() {
-                                      if (isChecked) {
-                                        isChecked = !isChecked;
-                                        taskdata.whoToDo.remove(fulls![i]);
-                                        updateTask(taskdata);
-                                      } else {
-                                        taskdata.whoToDo.add(fulls![i]);
-                                        updateTask(taskdata);
-                                      }
-                                    });
-                                  },
-                                )
-                              ],
-                            );
-                          }),
-                    ),
-                  ],
+                  ),
+                  autocorrect: false,
+                  cursorColor: Colors.black,
                 ),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      updateTask(taskdata);
-                      submit();
-                    },
-                    child: const Text('Submit')),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _textController,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'DESCRIPTION',
+                    hintText: "Write down a description",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.2),
+                    ),
+                  ),
+                  autocorrect: false,
+                  cursorColor: Colors.black,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text('Select Who To DO'),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: fulls!.length,
+                      itemBuilder: (context, i) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(fulls![i]),
+                            RoundCheckBox(
+                              borderColor: Colors.black,
+                              isChecked: isChecked =
+                              taskdata.whoToDo.contains(fulls![i])
+                                  ? true
+                                  : false,
+                              animationDuration:
+                              const Duration(milliseconds: 200),
+                              checkedColor: Colors.blueGrey,
+                              onTap: (bool? selected) {
+                                setState(() {
+                                  if (isChecked) {
+                                    isChecked = !isChecked;
+                                    taskdata.whoToDo.remove(fulls![i]);
+                                    updateTask(taskdata);
+                                  } else {
+                                    taskdata.whoToDo.add(fulls![i]);
+                                    updateTask(taskdata);
+                                  }
+                                });
+                              },
+                            )
+                          ],
+                        );
+                      }),
+                ),
               ],
-            ));
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  updateTask(taskdata);
+                  submit();
+                },
+                child: const Text('Submit')),
+          ],
+        ));
   }
 
   Future popUp(Task taskData) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            alignment: Alignment.center,
-            backgroundColor: Colors.grey,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(22.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            scrollable: true,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  children: const [Text('Task'), Icon(Icons.task)],
+        alignment: Alignment.center,
+        backgroundColor: Colors.grey,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(22.0))),
+        contentPadding: EdgeInsets.only(top: 10.0),
+        scrollable: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              children: const [Text('Task'), Icon(Icons.task)],
+            ),
+          ],
+        ),
+        content: Column(
+          children: [
+            SizedBox(
+              height: 32,
+              child: Row(
+                children: const [
+                  Text(
+                    ' Who To Do?:',
+                    style: TextStyle(color: Colors.black, fontSize: 21),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              whoToDoToString(taskData),
+              style: TextStyle(color: Colors.black, fontSize: 17),
+            ),
+            SizedBox(
+              height: 82,
+              child: Column(
+                children: const [
+                  Text(
+                    "",
+                    style: TextStyle(fontSize: 3),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: const [
+                SizedBox(
+                  height: 42,
+                  child: Text(' Project Description:',
+                      style: TextStyle(color: Colors.black, fontSize: 21)),
                 ),
               ],
             ),
-            content: Column(
+            Column(
               children: [
-                SizedBox(
-                  height: 32,
-                  child: Row(
-                    children: const [
-                      Text(
-                        ' Who To Do?:',
-                        style: TextStyle(color: Colors.black, fontSize: 21),
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  whoToDoToString(taskData),
-                  style: TextStyle(color: Colors.black, fontSize: 17),
-                ),
-                SizedBox(
-                  height: 82,
-                  child: Column(
-                    children: const [
-                      Text(
-                        "",
-                        style: TextStyle(fontSize: 3),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: const [
-                    SizedBox(
-                      height: 42,
-                      child: Text(' Project Description:',
-                          style: TextStyle(color: Colors.black, fontSize: 21)),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text(taskData.description,
-                        style: TextStyle(color: Colors.black, fontSize: 17))
-                  ],
-                ),
+                Text(taskData.description,
+                    style: TextStyle(color: Colors.black, fontSize: 17))
               ],
             ),
-            actions: [
-              TextButton(onPressed: submit, child: const Text('Submit')),
-            ],
-          ));
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: submit, child: const Text('Submit')),
+        ],
+      ));
 
   void submit() {
     _textController.text = "";
@@ -329,178 +330,197 @@ class _TaskPageState extends State<TaskPage> {
         ),
         body: Center(
             child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.black54, Colors.redAccent],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
-          ),
-          child: Center(
-            child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  AnimatedButton(
-                      width: 140,
-                      height: 40,
-                      selectedTextColor: Colors.black87,
-                      selectedBackgroundColor: Colors.black12,
-                      isReverse: true,
-                      transitionType: TransitionType.BOTTOM_TO_TOP,
-                      borderRadius: 60,
-                      borderWidth: 2,
-                      text: 'ADD A TASK',
-                      textStyle: GoogleFonts.nunito(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w300),
-                      onPress: () {
-                        setState(() {
-                          isAnimDisplay = !isAnimDisplay;
-                          isTasksDisplay = !isTasksDisplay;
-                        });
-                      }),
-                  AnimatedButton(
-                      width: 140,
-                      height: 40,
-                      selectedTextColor: Colors.black87,
-                      selectedBackgroundColor: Colors.black12,
-                      isReverse: true,
-                      transitionType: TransitionType.BOTTOM_TO_TOP,
-                      borderRadius: 60,
-                      borderWidth: 2,
-                      text: 'INVITE PEOPLE',
-                      textStyle: GoogleFonts.nunito(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w300),
-                      onPress: () {
-                        setState(() {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddPeopleToProject(widget.project)));
-                        });
-                      })
-                ],
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.black54, Colors.redAccent],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter),
               ),
-              SizedBox(height: 10),
-              if (isTasksDisplay)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-                  child: Row(
+              child: Center(
+                child: Column(children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TextField(
-                        decoration: InputDecoration(
-                            constraints: const BoxConstraints(
-                                minHeight: 10,
-                                maxWidth: 320,
-                                maxHeight: 100,
-                                minWidth: 30),
-                            suffixIcon: IconButton(
-                                onPressed: () {
-                                  _textController.clear();
-                                },
-                                icon:
-                                    const Icon(Icons.delete_forever_outlined)),
-                            label: const Text('Task'),
-                            hintText: 'Keep it tight',
-                            icon: IconButton(
-                                icon: const Icon(Icons.task_alt_outlined,
-                                    color: Colors.grey,
-                                    size: 30,
-                                    shadows: [Shadow(blurRadius: 20.2)]),
-                                onPressed: (() {
-                                  if (_textController.text == "") {
-                                  } else {
-                                    addTask();
-                                    setState(() {
-                                      _textController.text = "";
-                                    });
-                                  }
-                                })),
-                            border: const OutlineInputBorder()),
-                        controller: _textController,
-                      ),
+                      AnimatedButton(
+                          width: 140,
+                          height: 40,
+                          selectedTextColor: Colors.black87,
+                          selectedBackgroundColor: Colors.black12,
+                          isReverse: true,
+                          transitionType: TransitionType.BOTTOM_TO_TOP,
+                          borderRadius: 60,
+                          borderWidth: 2,
+                          text: 'ADD A TASK',
+                          textStyle: GoogleFonts.nunito(
+                              fontSize: 16,
+                              letterSpacing: 1,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w300),
+                          onPress: () {
+                            setState(() {
+                              isAnimDisplay = !isAnimDisplay;
+                              isTasksDisplay = !isTasksDisplay;
+                            });
+                          }),
+                      AnimatedButton(
+                          width: 140,
+                          height: 40,
+                          selectedTextColor: Colors.black87,
+                          selectedBackgroundColor: Colors.black12,
+                          isReverse: true,
+                          transitionType: TransitionType.BOTTOM_TO_TOP,
+                          borderRadius: 60,
+                          borderWidth: 2,
+                          text: 'INVITE PEOPLE',
+                          textStyle: GoogleFonts.nunito(
+                              fontSize: 16,
+                              letterSpacing: 1,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w300),
+                          onPress: () {
+                            setState(() {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddPeopleToProject(widget.project)));
+                            });
+                          })
                     ],
                   ),
-                ),
-              if (widget.tasks.isEmpty)
-                Expanded(
-                    child: Center(
-                  child: Lottie.network(
-                      "https://assets8.lottiefiles.com/packages/lf20_W4M8Pi.json"),
-                )),
-              if (widget.tasks.isNotEmpty)
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                      child: ListView.builder(
-                        itemCount: widget.tasks.length,
-                        itemBuilder: ((context, index) => Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: ElevatedButton(
-                                 style: ElevatedButton.styleFrom(
-                                    shadowColor: Colors.indigo,
-                                    shape: const BeveledRectangleBorder(
-                                        side: BorderSide(
-                                            width: 4,
-                                            color: Colors.black12,
-                                            style: BorderStyle.solid,
-                                            strokeAlign: StrokeAlign.outside),
-                                        borderRadius: BorderRadius.horizontal(
-                                            left: Radius.elliptical(8, 8),
-                                            right: Radius.elliptical(8, 8))),
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: Colors.grey),
-                                onPressed: () {
-                                  popUp(widget.tasks[index]);
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(widget.tasks[index].content),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                            iconSize: 20,
-                                            onPressed: () async {
-                                              await _initRetrieval(
-                                                  widget.project);
-                                              taskEditMenu(widget.tasks[index]);
-                                            },
-                                            icon: const Icon(Icons.edit)),
-                                        IconButton(
-                                            icon: const Icon(
-                                                Icons.highlight_off,
-                                                color: Colors.grey,
-                                                size: 25,
-                                                shadows: [
-                                                  Shadow(blurRadius: 20.2)
-                                                ]),
-                                            onPressed: () {
-                                              deleteTask(widget.tasks[index]);
-                                              setState(() {});
-                                            }),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )),
+                  SizedBox(height: 10),
+                  if (isTasksDisplay)
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                constraints: const BoxConstraints(
+                                    minHeight: 10,
+                                    maxWidth: 320,
+                                    maxHeight: 100,
+                                    minWidth: 30),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      _textController.clear();
+                                    },
+                                    icon:
+                                    const Icon(Icons.delete_forever_outlined)),
+                                label: const Text('Task'),
+                                hintText: 'Keep it tight',
+                                icon: IconButton(
+                                    icon: const Icon(Icons.task_alt_outlined,
+                                        color: Colors.grey,
+                                        size: 30,
+                                        shadows: [Shadow(blurRadius: 20.2)]),
+                                    onPressed: (() {
+                                      if (_textController.text == "") {
+                                      } else {
+                                        addTask();
+                                        setState(() {
+                                          _textController.text = "";
+                                        });
+                                      }
+                                    })),
+                                border: const OutlineInputBorder()),
+                            controller: _textController,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                )
-            ]),
-          ),
-        )));
+                  if (widget.tasks.isEmpty)
+                    Expanded(
+                        child: Center(
+                          child: Lottie.network(
+                              "https://assets8.lottiefiles.com/packages/lf20_W4M8Pi.json"),
+                        )),
+                  if (widget.tasks.isNotEmpty)
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("projects")
+                                  .doc(widget.project.id)
+                                  .collection("tasks")
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if(snapshot.hasData){
+                                  return ListView.builder(
+                                    itemCount: snapshot.data!.docs.length,
+                                    itemBuilder: ((context, index) {
+                                      var ds = snapshot.data!.docs[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              shadowColor: Colors.indigo,
+                                              shape: const BeveledRectangleBorder(
+                                                  side: BorderSide(
+                                                      width: 4,
+                                                      color: Colors.black12,
+                                                      style: BorderStyle.solid,
+                                                      strokeAlign: StrokeAlign.outside),
+                                                  borderRadius: BorderRadius.horizontal(
+                                                      left: Radius.elliptical(8, 8),
+                                                      right: Radius.elliptical(8, 8))),
+                                              foregroundColor: Colors.black,
+                                              backgroundColor: Colors.grey),
+                                          onPressed: () {
+                                            popUp(widget.tasks[index]);
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(ds["content"]),
+                                              Row(
+                                                children: [
+                                                  IconButton(
+                                                      iconSize: 20,
+                                                      onPressed: () async {
+                                                        setState(() {
+
+                                                        });
+                                                        await _initRetrieval(
+                                                            widget.project);
+                                                        taskEditMenu(widget.tasks[index]);
+                                                      },
+                                                      icon: const Icon(Icons.edit)),
+                                                  IconButton(
+                                                      icon: const Icon(
+                                                          Icons.highlight_off,
+                                                          color: Colors.grey,
+                                                          size: 25,
+                                                          shadows: [
+                                                            Shadow(blurRadius: 20.2)
+                                                          ]),
+                                                      onPressed: () {
+                                                        deleteTask(widget.tasks[index]);
+                                                        setState(() {});
+                                                      }),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  );}
+                                else {
+                                  return CircularProgressIndicator();
+                                }
+                              }
+                          ),
+                        ),
+                      ),
+                    )
+                ]),
+              ),
+            )));
   }
 }
