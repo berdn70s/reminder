@@ -14,7 +14,6 @@ class Message {
       'senderName': senderName,
       'senderID': senderID,
       'time':time
-
     };
   }
 

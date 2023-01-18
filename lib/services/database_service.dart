@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:remainder/models/message.dart';
 import 'package:remainder/models/person.dart';
@@ -49,6 +50,25 @@ class DatabaseService {
       'contributors': FieldValue.arrayUnion([id])
     });
     addProjectToUser(id, project);
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    String lastName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["lastName"]);
+    String full = firstName + " " + lastName;
+
+    Message message= Message("${full} is joined", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("messages")
+        .doc()
+        .set(message.toMap());
   }
 
   Future<void> updateProject(Project projectData) async {
@@ -65,10 +85,31 @@ class DatabaseService {
     await _db.collection("projects").doc(projectData.id).update({
       'contributors': FieldValue.arrayRemove([id])
     });
+
     if (projectData.contributors.length == 1) {
       await _db.collection("projects").doc(projectData.id).delete();
       deleteMessages(projectData);
       deleteTasks(projectData);
+    }else{
+      String firstName = await FirebaseFirestore.instance
+          .collection("users")
+          .where("uid", isEqualTo: id)
+          .get()
+          .then((value) => value.docs[0].data()["firstName"]);
+      String lastName = await FirebaseFirestore.instance
+          .collection("users")
+          .where("uid", isEqualTo: id)
+          .get()
+          .then((value) => value.docs[0].data()["lastName"]);
+      String full = firstName + " " + lastName;
+
+      Message message= Message("${full} is left", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+      await _db
+          .collection("projects")
+          .doc(projectData.id)
+          .collection("messages")
+          .doc()
+          .set(message.toMap());
     }
   }
 
@@ -117,15 +158,60 @@ class DatabaseService {
         .collection("tasks")
         .doc(taskData.id)
         .set(taskData.toMap());
+    String id=FirebaseAuth.instance.currentUser!.uid;
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    String lastName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["lastName"]);
+    String full = firstName + " " + lastName;
+
+    Message message= Message("${full} is added task ${taskData.content}", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("messages")
+        .doc()
+        .set(message.toMap());
   }
 
   Future<void> updateTask(Project project, Task taskData) async {
+    String oldName= await FirebaseFirestore.instance
+        .collection("projects").doc(project.id).collection("tasks")
+        .where("id", isEqualTo: taskData.id)
+        .get()
+        .then((value) => value.docs[0].data()["content"]);
     await _db
         .collection("projects")
         .doc(project.id)
         .collection("tasks")
         .doc(taskData.id)
         .update(taskData.toMap());
+    String id=FirebaseAuth.instance.currentUser!.uid;
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    String lastName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["lastName"]);
+    String full = firstName + " " + lastName;
+
+    Message message= Message("${full} is edited task ${oldName} to ${taskData.content}", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("messages")
+        .doc()
+        .set(message.toMap());
   }
 
   Future<void> deleteTask(Project project, Task taskData) async {
@@ -135,6 +221,26 @@ class DatabaseService {
         .collection("tasks")
         .doc(taskData.id)
         .delete();
+    String id=FirebaseAuth.instance.currentUser!.uid;
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    String lastName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["lastName"]);
+    String full = firstName + " " + lastName;
+
+    Message message= Message("${full} is deleted the task  ${taskData.content}", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    await _db
+        .collection("projects")
+        .doc(project.id)
+        .collection("messages")
+        .doc()
+        .set(message.toMap());
   }
 
   Future<List<Task>> retrieveTasks(Project projectData) async {
