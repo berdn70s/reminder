@@ -15,7 +15,7 @@ class DatabaseService {
         .set(projectData.toMap());
   }
 
-  Future<void> addUser(Person person) async {
+   Future<void> addUser(Person person) async {
     await _db.collection("users").doc(person.uid).set(person.toMap());
   }
 

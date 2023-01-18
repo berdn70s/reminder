@@ -49,7 +49,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         elevation: 0,
         backgroundColor: Colors.black54,
         title: Padding(
-          padding: const EdgeInsets.only(left: 49),
+          padding: const  EdgeInsets.only(left: 49),
           child: Row(
             children: [SizedBox(width: 65,),
               const Icon(Icons.timelapse, color: Colors.black),

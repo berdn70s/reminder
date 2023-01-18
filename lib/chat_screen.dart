@@ -8,7 +8,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<Message> _userMessages = [];
+  List<Message> _userMessages =  [];
   List<Message> _receivedMessages = [];
   List<Message> wholeMessages = [];
 

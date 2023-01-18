@@ -15,7 +15,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool visibilityCheck = true;
 
   @override
-  void dispose() {
+   void dispose() {
     emailController.dispose();
     super.dispose();
   }

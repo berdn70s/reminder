@@ -5,7 +5,7 @@ class Message{
   String senderName;
   String senderID;
 
-  Message(this.content, this.senderName, this.senderID);
+   Message(this.content, this.senderName, this.senderID);
 
   Map<String, dynamic> toMap() {
     return {

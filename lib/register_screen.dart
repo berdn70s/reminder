@@ -52,7 +52,7 @@ class _RegisterState extends State<Register> {
       setState(() {});
     });
 
-    passwordController.addListener(() {
+     passwordController.addListener(() {
       setState(() {});
     });
 

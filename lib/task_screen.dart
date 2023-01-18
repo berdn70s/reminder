@@ -277,7 +277,7 @@ class _TaskPageState extends State<TaskPage> {
   deleteTask(Task taskData) async {
     await service.deleteTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
-    setState(() {});
+    setState(()  {});
   }
 
   @override

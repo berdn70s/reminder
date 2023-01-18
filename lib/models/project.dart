@@ -7,7 +7,7 @@ class Project {
 
   Project(this.projectName,this.contributors);
 
-  Map<String, dynamic> toMap() {
+   Map<String, dynamic> toMap() {
     return {
       'projectName': projectName,
       'contributors': contributors,

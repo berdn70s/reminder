@@ -183,7 +183,7 @@ class _LoginState extends State<Login> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ChangePassword()));
+                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ChangePassword()));
                     },
                     child: Text('Forgot Password',
                         style: GoogleFonts.arya(

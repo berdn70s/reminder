@@ -44,7 +44,7 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
               colors: [Colors.black54, Colors.redAccent],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
-        ),
+         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
