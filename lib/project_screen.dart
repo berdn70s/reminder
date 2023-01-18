@@ -54,7 +54,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         backgroundColor: Colors.black54,
         title: Padding(
           padding: const EdgeInsets.only(left: 49),
-          child: Row(
+           child: Row(
             children: [
               SizedBox(
                 width: 65,

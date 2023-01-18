@@ -42,7 +42,7 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
               colors: [Colors.black54, Colors.redAccent],
-              begin: Alignment.topCenter,
+               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
         ),
         child: Column(

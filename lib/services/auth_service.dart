@@ -9,7 +9,7 @@ class AuthService {
   DatabaseService service = DatabaseService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future register(String firstName, String lastName, String email,
+   Future register(String firstName, String lastName, String email,
       String password, String checker, BuildContext context) async {
     if (password == checker) {
       try {

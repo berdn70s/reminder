@@ -446,7 +446,7 @@ class _TaskPageState extends State<TaskPage> {
                         itemBuilder: ((context, index) => Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
+                                 style: ElevatedButton.styleFrom(
                                     shadowColor: Colors.indigo,
                                     shape: const BeveledRectangleBorder(
                                         side: BorderSide(

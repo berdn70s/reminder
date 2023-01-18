@@ -46,7 +46,7 @@ class _RegisterState extends State<Register> {
     emailController.addListener(() {
       setState(() {});
     });
-    firstNameController.addListener(() {
+     firstNameController.addListener(() {
       setState(() {});
     });
     lastNameController.addListener(() {

@@ -177,7 +177,7 @@ class _LoginState extends State<Login> {
                 const SizedBox(
                   height: 6,
                 ),
-                SizedBox(
+                 SizedBox(
                   width: 150,
                   height: 35,
                   child: ElevatedButton(

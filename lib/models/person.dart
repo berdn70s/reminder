@@ -8,7 +8,7 @@ class Person {
   String email;
   String uid;
   List<Project> projects;
-  bool? isDoingTask = false;
+   bool? isDoingTask = false;
   final _user = FirebaseAuth.instance.currentUser;
 
   Person(this.firstName, this.lastName, this.email, this.uid, this.projects,
