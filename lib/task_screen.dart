@@ -27,7 +27,7 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   bool whoToDoCheck = false;
-  bool isChecked = false;
+  bool isChecked  = false;
   bool isAnimDisplay = false;
   bool isTasksDisplay = false;
   List<String>? fulls;
