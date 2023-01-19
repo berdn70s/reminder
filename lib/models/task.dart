@@ -8,7 +8,7 @@ class Task {
   bool? isItDone;
   String? id;
 
-   Task(this.content, this.description, this.whoToDo, {this.isItDone});
+  Task(this.content, this.description, this.whoToDo, {this.isItDone});
 
   Map<String, dynamic> toMap() {
     return {

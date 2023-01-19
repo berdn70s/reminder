@@ -6,9 +6,9 @@ import 'package:remainder/models/project.dart';
 import 'package:remainder/services/database_service.dart';
 
 class AddPeopleToProject extends StatefulWidget {
-  Project project;
+  final Project project;
 
-  AddPeopleToProject(this.project, {super.key});
+  const AddPeopleToProject(this.project, {super.key});
 
   @override
   State<AddPeopleToProject> createState() => _AddPeopleToProjectState();
@@ -23,7 +23,6 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     textController.dispose();
   }
@@ -32,17 +31,17 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
   Widget build(BuildContext context) {
     Widget animation = isSubmitted
         ? Lottie.network(
-            'https://assets1.lottiefiles.com/packages/lf20_ojvdktpp.json')
+        'https://assets1.lottiefiles.com/packages/lf20_ojvdktpp.json')
         : Lottie.network(
-            'https://assets7.lottiefiles.com/packages/lf20_ru9rYQ.json',
-            repeat: false);
+        'https://assets7.lottiefiles.com/packages/lf20_ru9rYQ.json',
+        repeat: false);
 
     return Material(
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
               colors: [Colors.black54, Colors.redAccent],
-               begin: Alignment.topCenter,
+              begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
         ),
         child: Column(
@@ -76,7 +75,7 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
                     },
                   ),
                   label: const Text('Email'),
-                  hintText: 'Enter a valid email adress ',
+                  hintText: 'Enter a valid email address ',
                   border: const OutlineInputBorder()),
               onChanged: (String a) {
                 setState(() {
@@ -101,11 +100,11 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
                       letterSpacing: 1,
                       color: Colors.black87,
                       fontWeight: FontWeight.w300),
-                  onPress: () {
+                  onPress: () async {
                     setState(() {
                       isSubmitted = false;
                     });
-                    service.addUserToProject(
+                    await service.addUserToProject(
                         textController.text, widget.project);
                     Navigator.of(context).pop(widget.project);
                   }),

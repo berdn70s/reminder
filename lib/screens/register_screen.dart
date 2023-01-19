@@ -46,7 +46,7 @@ class _RegisterState extends State<Register> {
     emailController.addListener(() {
       setState(() {});
     });
-     firstNameController.addListener(() {
+    firstNameController.addListener(() {
       setState(() {});
     });
     lastNameController.addListener(() {
@@ -235,15 +235,15 @@ class _RegisterState extends State<Register> {
                 height: 35,
                 child: ElevatedButton(
                   onPressed: emailController.text.isEmpty ||
-                          passwordController.text.isEmpty ||
-                          checkingPasswordController.text.isEmpty
+                      passwordController.text.isEmpty ||
+                      checkingPasswordController.text.isEmpty
                       ? null
                       : register,
                   child: Text(
                     'Sign UP',
                     style: GoogleFonts.arya(
                         textStyle:
-                            const TextStyle(color: Colors.black, fontSize: 22)),
+                        const TextStyle(color: Colors.black, fontSize: 22)),
                   ),
                 ),
               ),

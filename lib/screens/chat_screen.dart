@@ -7,20 +7,19 @@ import '../models/message.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 
 class ChatPage extends StatefulWidget {
-  Project project;
+  final Project project;
 
-  ChatPage(
-    this.project, {
-    Key? key,
-  }) : super(key: key);
+  const ChatPage(
+      this.project, {
+        Key? key,
+      }) : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late final Project project;
-  List<Message> wholeMessages = [];
+  late Stream<QuerySnapshot<Map<String, dynamic>>> snapshots;
 
   DatabaseService service = DatabaseService();
   TextEditingController textEditingController = TextEditingController();
@@ -31,7 +30,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     scrollController.dispose();
     textEditingController.dispose();
@@ -39,34 +37,34 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    project = widget.project;
+    super.initState();
+    snapshots=getSnapshots();
     textEditingController.addListener(() {
       setState(() {});
     });
-    _initRetrieval();
-    super.initState();
+  }
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSnapshots()  {
+    return FirebaseFirestore.instance
+        .collection("projects")
+        .doc(widget.project.id)
+        .collection("messages")
+        .orderBy("time")
+        .snapshots();
   }
 
-  Future<void> _initRetrieval() async {
-    wholeMessages = await service.retrieveMessage(project);
+
+  Future<void> sendMessage() async {
+    String text = textEditingController.text;
+    String name = await getNameOfContributor();
+    Message message = Message(text, name, FirebaseAuth.instance.currentUser!.uid, DateTime.now());
+    await service.addMessage(widget.project, message);
+    await service.updateProject(widget.project);
   }
 
-  Future<void> SendMessage() async {
-    String text = textEditingController.value.text;
-    String name =
-        await getNameOfContributor(FirebaseAuth.instance.currentUser!.uid);
-    var time = DateTime.now().millisecondsSinceEpoch;
-    Message message =
-        Message(text, name, FirebaseAuth.instance.currentUser!.uid, time);
-    await service.addMessage(project, message);
-    await service.updateProject(project);
-    await _initRetrieval();
-  }
-
-  Future<String> getNameOfContributor(String id) async {
+  Future<String> getNameOfContributor() async {
     String firstName = await FirebaseFirestore.instance
         .collection("users")
-        .where("uid", isEqualTo: id)
+        .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) => value.docs[0].data()["firstName"]);
     return firstName;
@@ -87,7 +85,7 @@ class _ChatPageState extends State<ChatPage> {
               },
               decoration: InputDecoration(
                 border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(13)),
+                OutlineInputBorder(borderRadius: BorderRadius.circular(13)),
                 hintText: "Type message",
               ),
               controller: textEditingController,
@@ -96,27 +94,30 @@ class _ChatPageState extends State<ChatPage> {
         ),
         enableButton
             ? IconButton(
-                color: Theme.of(context).primaryColor,
-                icon: Icon(
-                  Icons.send,
-                ),
-                disabledColor: Colors.grey,
-                onPressed: () {
-                  if (textEditingController.text == "") {
-                  } else {
-                    SendMessage();
-                    textEditingController.text = "";
-                  }
-                },
-              )
+          color: Theme.of(context).primaryColor,
+          icon: Icon(
+            Icons.send,
+          ),
+          disabledColor: Colors.grey,
+          onPressed: () {
+            if (textEditingController.text == "") {
+            } else {
+              sendMessage();
+              setState(() {
+                snapshots=getSnapshots();
+              });
+              textEditingController.text = "";
+            }
+          },
+        )
             : IconButton(
-                color: Colors.blue,
-                icon: Icon(
-                  Icons.send,
-                ),
-                disabledColor: Colors.grey,
-                onPressed: null,
-              )
+          color: Colors.blue,
+          icon: Icon(
+            Icons.send,
+          ),
+          disabledColor: Colors.grey,
+          onPressed: null,
+        )
       ],
     );
 
@@ -139,12 +140,7 @@ class _ChatPageState extends State<ChatPage> {
           children: <Widget>[
             Expanded(
               child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("projects")
-                      .doc(project.id)
-                      .collection("messages")
-                      .orderBy("time")
-                      .snapshots(),
+                  stream: snapshots,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
@@ -158,9 +154,9 @@ class _ChatPageState extends State<ChatPage> {
                                 CircleAvatar(
                                     backgroundColor: Colors.black26,
                                     child: Text(ds["senderName"][0])),
-                                Container(
+                                SizedBox(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.9,
+                                  MediaQuery.of(context).size.width * 0.9,
                                   height: 40,
                                   child: BubbleNormal(
                                     isSender: false,
@@ -174,9 +170,9 @@ class _ChatPageState extends State<ChatPage> {
                           } else {
                             return Row(
                               children: <Widget>[
-                                Container(
+                                SizedBox(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.9,
+                                  MediaQuery.of(context).size.width * 0.9,
                                   height: 40,
                                   child: BubbleNormal(
                                     sent: true,

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:remainder/models/project.dart';
 import 'package:remainder/models/task.dart';
-import 'package:remainder/screens/addPeopleToProject_screen.dart';
+import 'package:remainder/screens/add_people_to_project_screen.dart';
 import 'package:remainder/screens/chat_screen.dart';
 import 'package:remainder/services/database_service.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
@@ -13,7 +13,6 @@ import 'package:roundcheckbox/roundcheckbox.dart';
 class TaskPage extends StatefulWidget {
   Project project;
   List<Task> tasks;
-  String? email;
 
   TaskPage(
       this.tasks,
@@ -26,6 +25,7 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+  late Stream<QuerySnapshot<Map<String, dynamic>>> snapshots;
   bool whoToDoCheck = false;
   bool isChecked  = false;
   bool isAnimDisplay = false;
@@ -39,7 +39,15 @@ class _TaskPageState extends State<TaskPage> {
   void initState() {
     _textController.addListener(() {});
     super.initState();
+    snapshots=getTasks();
     _initRetrieval();
+  }
+  Stream<QuerySnapshot<Map<String, dynamic>>> getTasks(){
+    return FirebaseFirestore.instance
+        .collection("projects")
+        .doc(widget.project.id)
+        .collection("tasks")
+        .snapshots();
   }
 
   @override
@@ -48,8 +56,6 @@ class _TaskPageState extends State<TaskPage> {
     _nameController.dispose();
     super.dispose();
   }
-
-
 
   Future<void> _initRetrieval() async {
     await service.updateProject(widget.project);
@@ -87,9 +93,10 @@ class _TaskPageState extends State<TaskPage> {
     return temp;
   }
 
-  Future taskEditMenu(Task taskdata) async {
-    _nameController.text = taskdata.content;
-    _textController.text = taskdata.description;
+  Future taskEditMenu(Task task) async {
+    _nameController.text = task.content;
+    _textController.text = task.description;
+    await _initRetrieval();
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -150,7 +157,7 @@ class _TaskPageState extends State<TaskPage> {
                             RoundCheckBox(
                               borderColor: Colors.black,
                               isChecked: isChecked =
-                              taskdata.whoToDo.contains(fulls![i])
+                              task.whoToDo.contains(fulls![i])
                                   ? true
                                   : false,
                               animationDuration:
@@ -160,11 +167,11 @@ class _TaskPageState extends State<TaskPage> {
                                 setState(() {
                                   if (isChecked) {
                                     isChecked = !isChecked;
-                                    taskdata.whoToDo.remove(fulls![i]);
-                                    updateTask(taskdata);
+                                    task.whoToDo.remove(fulls![i]);
+                                    updateTask(task);
                                   } else {
-                                    taskdata.whoToDo.add(fulls![i]);
-                                    updateTask(taskdata);
+                                    task.whoToDo.add(fulls![i]);
+                                    updateTask(task);
                                   }
                                 });
                               },
@@ -179,7 +186,7 @@ class _TaskPageState extends State<TaskPage> {
           actions: [
             TextButton(
                 onPressed: () {
-                  updateTask(taskdata);
+                  updateTask(task);
                   submit();
                 },
                 child: const Text('Submit')),
@@ -445,11 +452,7 @@ class _TaskPageState extends State<TaskPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 22.0),
                           child: StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection("projects")
-                                  .doc(widget.project.id)
-                                  .collection("tasks")
-                                  .snapshots(),
+                              stream: snapshots,
                               builder: (context, snapshot) {
                                 if(snapshot.hasData){
                                   return ListView.builder(
@@ -488,6 +491,7 @@ class _TaskPageState extends State<TaskPage> {
                                                         setState(() {
 
                                                         });
+                                                        await service.updateProject(widget.project);
                                                         await _initRetrieval();
                                                         taskEditMenu(widget.tasks[index]);
                                                       },

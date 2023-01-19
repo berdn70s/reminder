@@ -36,12 +36,12 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     projectList =
         service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
     retrievedProjectList =
-        await service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
+    await service.retrieveProjects(FirebaseAuth.instance.currentUser!.uid);
   }
 
   addProject() async {
     Project project =
-        Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
+    Project(controller.text, [FirebaseAuth.instance.currentUser!.uid]);
     service.addProject(project);
     service.addProjectToUser(FirebaseAuth.instance.currentUser!.uid, project);
   }
@@ -55,7 +55,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         backgroundColor: Colors.black54,
         title: Padding(
           padding: const EdgeInsets.only(left: 49),
-           child: Row(
+          child: Row(
             children: [
               SizedBox(
                 width: 65,
@@ -110,9 +110,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                         child: ListView.separated(
                             itemCount: retrievedProjectList!.length,
                             separatorBuilder: (context, index) =>
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             itemBuilder: (context, index) {
                               return Column(
                                 children: [
@@ -122,9 +122,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                       decoration: BoxDecoration(
                                           color: Colors.red,
                                           borderRadius:
-                                              BorderRadius.circular(16.0)),
+                                          BorderRadius.circular(16.0)),
                                       padding:
-                                          const EdgeInsets.only(right: 28.0),
+                                      const EdgeInsets.only(right: 28.0),
                                       alignment: AlignmentDirectional.centerEnd,
                                       child: const Text(
                                         "DELETE",
@@ -133,41 +133,41 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                     ),
                                     direction: DismissDirection.endToStart,
                                     resizeDuration:
-                                        const Duration(milliseconds: 200),
+                                    const Duration(milliseconds: 200),
                                     key: UniqueKey(),
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: const Color.fromARGB(
                                               255, 83, 80, 80),
                                           borderRadius:
-                                              BorderRadius.circular(16.0)),
+                                          BorderRadius.circular(16.0)),
                                       child: ListTile(
                                         onTap: () async {
                                           List<Task> tasks =
-                                              await service.retrieveTasks(
-                                                  retrievedProjectList![index]);
+                                          await service.retrieveTasks(
+                                              retrievedProjectList![index]);
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       TaskPage(
                                                           tasks,
                                                           retrievedProjectList![
-                                                              index])));
+                                                          index])));
                                         },
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(4.0),
+                                          BorderRadius.circular(4.0),
                                         ),
                                         title: Text(retrievedProjectList![index]
                                             .projectName),
                                         trailing: ElevatedButton(
                                           style: const ButtonStyle(
                                               backgroundColor:
-                                                  MaterialStatePropertyAll<
-                                                      Color>(Colors.blueGrey),
+                                              MaterialStatePropertyAll<
+                                                  Color>(Colors.blueGrey),
                                               shadowColor:
-                                                  MaterialStatePropertyAll<
-                                                      Color>(Colors.redAccent)),
+                                              MaterialStatePropertyAll<
+                                                  Color>(Colors.redAccent)),
                                           onPressed: () async {
                                             await service.deleteProject(
                                                 FirebaseAuth

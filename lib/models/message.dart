@@ -4,7 +4,7 @@ class Message {
   String content;
   String senderName;
   String senderID;
-  int time;
+  DateTime time;
 
   Message(this.content, this.senderName, this.senderID,this.time);
 

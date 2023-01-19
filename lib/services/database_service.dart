@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:remainder/models/message.dart';
 import 'package:remainder/models/person.dart';
 import 'package:remainder/models/project.dart';
@@ -26,9 +25,9 @@ class DatabaseService {
         .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) => value.docs[0].data()["lastName"]);
-    String full = firstName + " " + lastName;
+    String full = "$firstName $lastName";
 
-    Message message= Message("${full} is created this project.", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    Message message= Message("$full is created this project.", "Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(projectData.id)
@@ -72,9 +71,9 @@ class DatabaseService {
         .where("uid", isEqualTo: id)
         .get()
         .then((value) => value.docs[0].data()["lastName"]);
-    String full = firstName + " " + lastName;
+    String full = "$firstName $lastName";
 
-    Message message= Message("${full} is joined", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    Message message= Message("$full is joined", "Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -98,7 +97,7 @@ class DatabaseService {
       'contributors': FieldValue.arrayRemove([id])
     });
 
-    if (projectData.contributors.length == 1) {
+    if (projectData.contributors.isEmpty) {
       await _db.collection("projects").doc(projectData.id).delete();
       deleteMessages(projectData);
       deleteTasks(projectData);
@@ -113,9 +112,9 @@ class DatabaseService {
           .where("uid", isEqualTo: id)
           .get()
           .then((value) => value.docs[0].data()["lastName"]);
-      String full = firstName + " " + lastName;
+      String full = "$firstName $lastName";
 
-      Message message= Message("${full} is left", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+      Message message= Message("$full is left", "Admin", "1", DateTime.now());
       await _db
           .collection("projects")
           .doc(projectData.id)
@@ -181,9 +180,9 @@ class DatabaseService {
         .where("uid", isEqualTo: id)
         .get()
         .then((value) => value.docs[0].data()["lastName"]);
-    String full = firstName + " " + lastName;
+    String full = "$firstName $lastName";
 
-    Message message= Message("${full} is added task ${taskData.content}", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    Message message= Message("$full is added task ${taskData.content}", "Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -215,9 +214,9 @@ class DatabaseService {
         .where("uid", isEqualTo: id)
         .get()
         .then((value) => value.docs[0].data()["lastName"]);
-    String full = firstName + " " + lastName;
+    String full = "$firstName $lastName";
 
-    Message message= Message("${full} is edited task ${oldName} to ${taskData.content}", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    Message message= Message("$full is edited task $oldName to ${taskData.content}", "Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -244,9 +243,9 @@ class DatabaseService {
         .where("uid", isEqualTo: id)
         .get()
         .then((value) => value.docs[0].data()["lastName"]);
-    String full = firstName + " " + lastName;
+    String full = "$firstName $lastName";
 
-    Message message= Message("${full} is deleted the task  ${taskData.content}", "Admin", "1", DateTime.now().millisecondsSinceEpoch);
+    Message message= Message("$full is deleted the task  ${taskData.content}", "Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)

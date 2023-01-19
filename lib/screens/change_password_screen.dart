@@ -139,7 +139,7 @@ class  _ChangePasswordState extends State<ChangePassword> {
                     'Send Request',
                     style: GoogleFonts.arya(
                         textStyle:
-                            const TextStyle(color: Colors.black, fontSize: 20)),
+                        const TextStyle(color: Colors.black, fontSize: 20)),
                   ),
                 )
               ],

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:remainder/screens/changePassword_screen.dart';
+import 'package:remainder/screens/change_password_screen.dart';
 import 'package:remainder/screens/register_screen.dart';
 import 'package:remainder/screens/project_screen.dart';
 import 'package:remainder/services/auth_service.dart';
@@ -161,9 +161,9 @@ class _LoginState extends State<Login> {
                   height: 35,
                   child: ElevatedButton(
                     style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: emailController.text.isEmpty ||
-                            passwordController.text.isEmpty
+                        passwordController.text.isEmpty
                         ? null
                         : signIn,
                     child: Text(
@@ -177,12 +177,12 @@ class _LoginState extends State<Login> {
                 const SizedBox(
                   height: 6,
                 ),
-                 SizedBox(
+                SizedBox(
                   width: 150,
                   height: 35,
                   child: ElevatedButton(
                     style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const ChangePassword()));
