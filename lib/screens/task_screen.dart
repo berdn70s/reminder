@@ -58,7 +58,6 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future<void> _initRetrieval() async {
-    await service.updateProject(widget.project);
     fulls = await getNameOfContributor();
   }
 
@@ -93,10 +92,10 @@ class _TaskPageState extends State<TaskPage> {
     return temp;
   }
 
+
   Future taskEditMenu(Task task) async {
     _nameController.text = task.content;
     _textController.text = task.description;
-    await _initRetrieval();
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -278,13 +277,11 @@ class _TaskPageState extends State<TaskPage> {
     taskData.description = _textController.text;
     await service.updateTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
-    setState(() {});
   }
 
   deleteTask(Task taskData) async {
     await service.deleteTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
-    setState(() {});
   }
 
   @override
@@ -293,7 +290,9 @@ class _TaskPageState extends State<TaskPage> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed: () => Navigator.pop(context, widget.tasks),
+            onPressed: () async {
+              Navigator.pop(context, widget.tasks);
+            },
           ),
           elevation: 0,
           backgroundColor: Colors.black54,
@@ -391,8 +390,9 @@ class _TaskPageState extends State<TaskPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddPeopleToProject(widget.project)));
+                                      builder: (context) {
+                                        return AddPeopleToProject(widget.project);
+                                      }));
                             });
                           })
                     ],
@@ -488,10 +488,6 @@ class _TaskPageState extends State<TaskPage> {
                                                   IconButton(
                                                       iconSize: 20,
                                                       onPressed: () async {
-                                                        setState(() {
-
-                                                        });
-                                                        await service.updateProject(widget.project);
                                                         await _initRetrieval();
                                                         taskEditMenu(widget.tasks[index]);
                                                       },

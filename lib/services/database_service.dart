@@ -97,10 +97,10 @@ class DatabaseService {
       'contributors': FieldValue.arrayRemove([id])
     });
 
-    if (projectData.contributors.isEmpty) {
-      await _db.collection("projects").doc(projectData.id).delete();
+    if (projectData.contributors.length==1) {
       deleteMessages(projectData);
       deleteTasks(projectData);
+      await _db.collection("projects").doc(projectData.id).delete();
     }else{
       String firstName = await FirebaseFirestore.instance
           .collection("users")
