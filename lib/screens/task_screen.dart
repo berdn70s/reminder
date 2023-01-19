@@ -74,7 +74,7 @@ class _TaskPageState extends State<TaskPage> {
           .where("uid", isEqualTo: projectData.contributors[i])
           .get()
           .then((value) => value.docs[0].data()["lastName"]);
-      String full = firstName + " " + lastName;
+      String full = "$firstName $lastName";
       if (temp.contains(full)) {
         continue;
       } else {
@@ -84,10 +84,10 @@ class _TaskPageState extends State<TaskPage> {
     return temp;
   }
 
-  Future taskEditMenu(Task taskdata) {
-    _initRetrieval(widget.project);
+  Future taskEditMenu(Task taskdata) async {
     _nameController.text = taskdata.content;
     _textController.text = taskdata.description;
+    await _initRetrieval(widget.project);
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
