@@ -152,7 +152,7 @@ class _ChatPageState extends State<ChatPage> {
                             return Row(
                               children: <Widget>[
                                 CircleAvatar(
-                                    backgroundColor: Colors.black26,
+                                    backgroundColor: ds["senderName"][0] == " " ? Colors.transparent : Colors.black26 ,
                                     child: Text(ds["senderName"][0])),
                                 SizedBox(
                                   width:
@@ -161,8 +161,9 @@ class _ChatPageState extends State<ChatPage> {
                                   child: BubbleNormal(
                                     isSender: false,
                                     text: ds["content"],
-                                    color: Colors.blueGrey,
-                                    tail: true,
+                                    textStyle: ds["senderName"][0] == " " ?TextStyle(color: Colors.black54) :TextStyle(color: Colors.black),
+                                    color:ds["senderName"][0] == " " ? Colors.grey : Colors.blueGrey,
+                                    tail: ds["senderName"][0] == " " ? false : true,
                                   ),
                                 ),
                               ],
@@ -174,12 +175,14 @@ class _ChatPageState extends State<ChatPage> {
                                   width:
                                   MediaQuery.of(context).size.width * 0.9,
                                   height: 40,
-                                  child: BubbleNormal(
-                                    sent: true,
-                                    isSender: true,
-                                    text: ds["content"],
-                                    color: Colors.orange,
-                                    tail: true,
+                                  child: Expanded(
+                                    child: BubbleNormal(
+                                      sent: true,
+                                      isSender: true,
+                                      text: ds["content"],
+                                      color: Colors.orange,
+                                      tail: true,
+                                    ),
                                   ),
                                 ),
                                 CircleAvatar(

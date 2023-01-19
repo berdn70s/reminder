@@ -27,7 +27,8 @@ class DatabaseService {
         .then((value) => value.docs[0].data()["lastName"]);
     String full = "$firstName $lastName";
 
-    Message message= Message("$full is created this project.", "Admin", "1", DateTime.now());
+    Message message = Message(
+        "$full is created this project.", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(projectData.id)
@@ -61,19 +62,9 @@ class DatabaseService {
       'contributors': FieldValue.arrayUnion([id])
     });
     addProjectToUser(id, project);
-    String firstName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["firstName"]);
-    String lastName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["lastName"]);
-    String full = "$firstName $lastName";
+    String full = await returnFullName(id);
 
-    Message message= Message("$full is joined", "Admin", "1", DateTime.now());
+    Message message = Message("$full is joined", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -97,24 +88,15 @@ class DatabaseService {
       'contributors': FieldValue.arrayRemove([id])
     });
 
-    if (projectData.contributors.length==1) {
+    if (projectData.contributors.length == 1) {
       deleteMessages(projectData);
       deleteTasks(projectData);
       await _db.collection("projects").doc(projectData.id).delete();
-    }else{
-      String firstName = await FirebaseFirestore.instance
-          .collection("users")
-          .where("uid", isEqualTo: id)
-          .get()
-          .then((value) => value.docs[0].data()["firstName"]);
-      String lastName = await FirebaseFirestore.instance
-          .collection("users")
-          .where("uid", isEqualTo: id)
-          .get()
-          .then((value) => value.docs[0].data()["lastName"]);
-      String full = "$firstName $lastName";
+    } else {
+      projectData.contributors.remove(id);
+      String full = await returnFullName(id);
 
-      Message message= Message("$full is left", "Admin", "1", DateTime.now());
+      Message message = Message("$full is left", " Admin", "1", DateTime.now());
       await _db
           .collection("projects")
           .doc(projectData.id)
@@ -122,6 +104,21 @@ class DatabaseService {
           .doc()
           .set(message.toMap());
     }
+  }
+
+  Future<String> returnFullName(String id) async {
+    String firstName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["firstName"]);
+    String lastName = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: id)
+        .get()
+        .then((value) => value.docs[0].data()["lastName"]);
+    String full = "$firstName $lastName";
+    return full;
   }
 
   Future<void> deleteMessages(Project projectData) async {
@@ -160,6 +157,7 @@ class DatabaseService {
         .toList();
   }
 
+
   Future<void> addTask(Project project, Task taskData) async {
     taskData.id =
         _db.collection("projects").doc(project.id).collection("tasks").doc().id;
@@ -169,20 +167,11 @@ class DatabaseService {
         .collection("tasks")
         .doc(taskData.id)
         .set(taskData.toMap());
-    String id=FirebaseAuth.instance.currentUser!.uid;
-    String firstName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["firstName"]);
-    String lastName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["lastName"]);
-    String full = "$firstName $lastName";
+    String id = FirebaseAuth.instance.currentUser!.uid;
+    String full = await returnFullName(id);
 
-    Message message= Message("$full is added task ${taskData.content}", "Admin", "1", DateTime.now());
+    Message message = Message("$full is added task ${taskData.content}",
+        " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -192,8 +181,10 @@ class DatabaseService {
   }
 
   Future<void> updateTask(Project project, Task taskData) async {
-    String oldName= await FirebaseFirestore.instance
-        .collection("projects").doc(project.id).collection("tasks")
+    String oldName = await FirebaseFirestore.instance
+        .collection("projects")
+        .doc(project.id)
+        .collection("tasks")
         .where("id", isEqualTo: taskData.id)
         .get()
         .then((value) => value.docs[0].data()["content"]);
@@ -203,20 +194,14 @@ class DatabaseService {
         .collection("tasks")
         .doc(taskData.id)
         .update(taskData.toMap());
-    String id=FirebaseAuth.instance.currentUser!.uid;
-    String firstName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["firstName"]);
-    String lastName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["lastName"]);
-    String full = "$firstName $lastName";
+    String id = FirebaseAuth.instance.currentUser!.uid;
+    String full = await returnFullName(id);
 
-    Message message= Message("$full is edited task $oldName to ${taskData.content}", "Admin", "1", DateTime.now());
+    Message message = Message(
+        "$full is edited task $oldName to ${taskData.content}",
+        " Admin",
+        "1",
+        DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -232,20 +217,11 @@ class DatabaseService {
         .collection("tasks")
         .doc(taskData.id)
         .delete();
-    String id=FirebaseAuth.instance.currentUser!.uid;
-    String firstName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["firstName"]);
-    String lastName = await FirebaseFirestore.instance
-        .collection("users")
-        .where("uid", isEqualTo: id)
-        .get()
-        .then((value) => value.docs[0].data()["lastName"]);
-    String full = "$firstName $lastName";
+    String id = FirebaseAuth.instance.currentUser!.uid;
+    String full = await returnFullName(id);
 
-    Message message= Message("$full is deleted the task  ${taskData.content}", "Admin", "1", DateTime.now());
+    Message message = Message("$full is deleted the task  ${taskData.content}",
+        " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
