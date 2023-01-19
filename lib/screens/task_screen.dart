@@ -90,7 +90,6 @@ class _TaskPageState extends State<TaskPage> {
   Future taskEditMenu(Task taskdata) async {
     _nameController.text = taskdata.content;
     _textController.text = taskdata.description;
-    await _initRetrieval();
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -489,7 +488,6 @@ class _TaskPageState extends State<TaskPage> {
                                                         setState(() {
 
                                                         });
-                                                        await service.updateProject(widget.project);
                                                         await _initRetrieval();
                                                         taskEditMenu(widget.tasks[index]);
                                                       },
