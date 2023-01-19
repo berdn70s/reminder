@@ -39,7 +39,7 @@ class _TaskPageState extends State<TaskPage> {
   void initState() {
     _textController.addListener(() {});
     super.initState();
-    _initRetrieval(widget.project);
+    _initRetrieval();
   }
 
   @override
@@ -49,8 +49,11 @@ class _TaskPageState extends State<TaskPage> {
     super.dispose();
   }
 
-  Future<void> _initRetrieval(Project project) async {
-    fulls = await getNameOfContributor(project);
+
+
+  Future<void> _initRetrieval() async {
+    await service.updateProject(widget.project);
+    fulls = await getNameOfContributor();
   }
 
   String whoToDoToString(Task taskData) {
@@ -61,17 +64,17 @@ class _TaskPageState extends State<TaskPage> {
     return owners;
   }
 
-  Future<List<String>> getNameOfContributor(Project projectData) async {
+  Future<List<String>> getNameOfContributor() async {
     List<String> temp = [];
-    for (int i = 0; i < projectData.contributors.length; i++) {
+    for (int i = 0; i < widget.project.contributors.length; i++) {
       String firstName = await FirebaseFirestore.instance
           .collection("users")
-          .where("uid", isEqualTo: projectData.contributors[i])
+          .where("uid", isEqualTo: widget.project.contributors[i])
           .get()
           .then((value) => value.docs[0].data()["firstName"]);
       String lastName = await FirebaseFirestore.instance
           .collection("users")
-          .where("uid", isEqualTo: projectData.contributors[i])
+          .where("uid", isEqualTo: widget.project.contributors[i])
           .get()
           .then((value) => value.docs[0].data()["lastName"]);
       String full = "$firstName $lastName";
@@ -87,7 +90,7 @@ class _TaskPageState extends State<TaskPage> {
   Future taskEditMenu(Task taskdata) async {
     _nameController.text = taskdata.content;
     _textController.text = taskdata.description;
-    await _initRetrieval(widget.project);
+    await _initRetrieval();
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -486,8 +489,8 @@ class _TaskPageState extends State<TaskPage> {
                                                         setState(() {
 
                                                         });
-                                                        await _initRetrieval(
-                                                            widget.project);
+                                                        await service.updateProject(widget.project);
+                                                        await _initRetrieval();
                                                         taskEditMenu(widget.tasks[index]);
                                                       },
                                                       icon: const Icon(Icons.edit)),
