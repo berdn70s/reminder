@@ -152,16 +152,16 @@ class _ChatPageState extends State<ChatPage> {
                             return Row(
                               children: <Widget>[
                                 CircleAvatar(
-                                    backgroundColor: ds["senderName"][0] == " " ? Colors.transparent : Colors.black26 ,
+                                    backgroundColor: ds["senderName"][0] == " " ? Colors.transparent : Colors.black26,
                                     child: Text(ds["senderName"][0])),
                                 SizedBox(
                                   width:
                                   MediaQuery.of(context).size.width * 0.9,
                                   height: 40,
                                   child: BubbleNormal(
+                                    textStyle: ds["senderName"][0] == " " ?TextStyle(color: Colors.black54) :TextStyle(color: Colors.black),
                                     isSender: false,
                                     text: ds["content"],
-                                    textStyle: ds["senderName"][0] == " " ?TextStyle(color: Colors.black54) :TextStyle(color: Colors.black),
                                     color:ds["senderName"][0] == " " ? Colors.grey : Colors.blueGrey,
                                     tail: ds["senderName"][0] == " " ? false : true,
                                   ),

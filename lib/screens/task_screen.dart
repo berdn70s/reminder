@@ -58,16 +58,21 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future<void> _initRetrieval() async {
+    widget.project=await service.retrieveProject(widget.project);
     fulls = await getNameOfContributor();
   }
 
   String whoToDoToString(Task taskData) {
     String owners = "";
     for (int i = 0; i < taskData.whoToDo.length; i++) {
-      owners = "$owners --> ${taskData.whoToDo[i]}\n";
+      if(!owners.contains(taskData.whoToDo[i]))
+        {
+          owners = "$owners --> ${taskData.whoToDo[i]}\n";
+        }
     }
     return owners;
   }
+
 
   Future<List<String>> getNameOfContributor() async {
     List<String> temp = [];
@@ -92,10 +97,11 @@ class _TaskPageState extends State<TaskPage> {
     return temp;
   }
 
-
   Future taskEditMenu(Task task) async {
     _nameController.text = task.content;
     _textController.text = task.description;
+   _initRetrieval();
+   task=await service.retrieveTask(widget.project, task);
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -162,16 +168,17 @@ class _TaskPageState extends State<TaskPage> {
                               animationDuration:
                               const Duration(milliseconds: 200),
                               checkedColor: Colors.blueGrey,
-                              onTap: (bool? selected) {
+                              onTap: (bool? selected) async {
+                                task= await service.retrieveTask(widget.project, task);
+                                if(task.whoToDo.contains(fulls![i])){
+                                  task.whoToDo.remove(fulls![i]);
+                                  updateTask(task);
+                                }else{
+                                  task.whoToDo.add(fulls![i]);
+                                  updateTask(task);
+                                }
                                 setState(() {
-                                  if (isChecked) {
-                                    isChecked = !isChecked;
-                                    task.whoToDo.remove(fulls![i]);
-                                    updateTask(task);
-                                  } else {
-                                    task.whoToDo.add(fulls![i]);
-                                    updateTask(task);
-                                  }
+
                                 });
                               },
                             )
@@ -184,9 +191,10 @@ class _TaskPageState extends State<TaskPage> {
           ),
           actions: [
             TextButton(
-                onPressed: () {
-                  updateTask(task);
-                  submit();
+                onPressed: ()  {
+                 updateTask(task);
+                 _textController.text = "";
+                 Navigator.of(context).pop(task);
                 },
                 child: const Text('Submit')),
           ],
@@ -256,14 +264,13 @@ class _TaskPageState extends State<TaskPage> {
           ],
         ),
         actions: [
-          TextButton(onPressed: submit, child: const Text('Submit')),
+          TextButton(onPressed:(){
+            Navigator.of(context).pop(taskData);
+          }, child: const Text('Submit')),
         ],
-      ));
+      )
+  );
 
-  void submit() {
-    _textController.text = "";
-    Navigator.of(context).pop();
-  }
 
   addTask() async {
     await service.addTask(widget.project,
@@ -277,11 +284,13 @@ class _TaskPageState extends State<TaskPage> {
     taskData.description = _textController.text;
     await service.updateTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
+    setState(() {});
   }
 
   deleteTask(Task taskData) async {
     await service.deleteTask(widget.project, taskData);
     widget.tasks = await service.retrieveTasks(widget.project);
+    setState(() {});
   }
 
   @override
@@ -290,9 +299,7 @@ class _TaskPageState extends State<TaskPage> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed: () async {
-              Navigator.pop(context, widget.tasks);
-            },
+            onPressed: () => Navigator.pop(context,widget.project.contributors),
           ),
           elevation: 0,
           backgroundColor: Colors.black54,
@@ -390,9 +397,8 @@ class _TaskPageState extends State<TaskPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) {
-                                        return AddPeopleToProject(widget.project);
-                                      }));
+                                      builder: (context) =>
+                                          AddPeopleToProject(widget.project)));
                             });
                           })
                     ],
@@ -489,7 +495,10 @@ class _TaskPageState extends State<TaskPage> {
                                                       iconSize: 20,
                                                       onPressed: () async {
                                                         await _initRetrieval();
+                                                        widget.tasks[index]=await service.retrieveTask(widget.project, widget.tasks[index]);
                                                         taskEditMenu(widget.tasks[index]);
+                                                        setState(() {
+                                                        });
                                                       },
                                                       icon: const Icon(Icons.edit)),
                                                   IconButton(
