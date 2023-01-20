@@ -167,7 +167,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                                                   Color>(Colors.blueGrey),
                                               shadowColor:
                                               MaterialStatePropertyAll<
-                                                  Color>(Colors.redAccent)),
+                                                  Color>(Colors.white)),
                                           onPressed: () async {
                                             await service.deleteProject(
                                                 FirebaseAuth

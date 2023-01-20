@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remainder/screens/login_screen.dart';
 import 'package:remainder/services/auth_service.dart';
+import 'package:lottie/lottie.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -103,15 +104,14 @@ class _RegisterState extends State<Register> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 36,
-                  ),
-                  child: Text(
-                    "Sign UP",
-                    style: TextStyle(fontSize: 35, fontStyle: FontStyle.normal),
-                  ),
+                child: Text(
+                  "Sign UP",
+                  style: TextStyle(fontSize: 35, fontStyle: FontStyle.normal),
                 ),
+              ),
+              Expanded(
+                child: Lottie.network('https://assets9.lottiefiles.com/packages/lf20_GXhQcxJ1M5.json'
+                ,repeat: true,width: 200,height: 200),
               ),
               TextField(
                 style: const TextStyle(color: Colors.black),

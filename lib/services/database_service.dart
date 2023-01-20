@@ -50,7 +50,7 @@ class DatabaseService {
         .then((value) => value.docs[0].data()["lastName"]);
     String full = "$firstName $lastName";
 
-    Message message= Message("$full is created this project.", " Admin", "1", DateTime.now());
+    Message message= Message("$full has created this project.", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(projectData.id)
@@ -86,7 +86,7 @@ class DatabaseService {
     addProjectToUser(id, project);
     String full = await getFullNameOfID(id);
 
-    Message message= Message("$full is joined", " Admin", "1", DateTime.now());
+    Message message= Message("$full has joined", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -117,7 +117,7 @@ class DatabaseService {
     }else{
       String full = await getFullNameOfID(id);
 
-      Message message= Message("$full is left", " Admin", "1", DateTime.now());
+      Message message= Message("$full has left", " Admin", "1", DateTime.now());
       await _db
           .collection("projects")
           .doc(projectData.id)
@@ -183,7 +183,7 @@ class DatabaseService {
     String id=FirebaseAuth.instance.currentUser!.uid;
     String full = await getFullNameOfID(id);
 
-    Message message= Message("$full is added task ${taskData.content}", " Admin", "1", DateTime.now());
+    Message message= Message("$full has added task ${taskData.content}", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -207,7 +207,7 @@ class DatabaseService {
     String id=FirebaseAuth.instance.currentUser!.uid;
     String full = await getFullNameOfID(id);
 
-    Message message= Message("$full is edited task $oldName to ${taskData.content}", " Admin", "1", DateTime.now());
+    Message message= Message("$full has edited task $oldName to ${taskData.content}", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)
@@ -226,7 +226,7 @@ class DatabaseService {
     String id=FirebaseAuth.instance.currentUser!.uid;
     String full = await getFullNameOfID(id);
 
-    Message message= Message("$full is deleted the task  ${taskData.content}", " Admin", "1", DateTime.now());
+    Message message= Message("$full has deleted the task  ${taskData.content}", " Admin", "1", DateTime.now());
     await _db
         .collection("projects")
         .doc(project.id)

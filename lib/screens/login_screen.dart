@@ -6,6 +6,8 @@ import 'package:remainder/screens/change_password_screen.dart';
 import 'package:remainder/screens/register_screen.dart';
 import 'package:remainder/screens/project_screen.dart';
 import 'package:remainder/services/auth_service.dart';
+import 'package:lottie/lottie.dart';
+
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -97,15 +99,7 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 36,
-                  ),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(fontSize: 35, fontStyle: FontStyle.normal),
-                  ),
-                ),
+                                  Flexible(child: LottieBuilder.network('https://assets8.lottiefiles.com/packages/lf20_7urcggot.json')),
                 TextField(
                   style: const TextStyle(color: Colors.black),
                   controller: emailController,
@@ -161,7 +155,7 @@ class _LoginState extends State<Login> {
                   height: 35,
                   child: ElevatedButton(
                     style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    ElevatedButton.styleFrom(backgroundColor: Colors.black12),
                     onPressed: emailController.text.isEmpty ||
                         passwordController.text.isEmpty
                         ? null
@@ -182,7 +176,7 @@ class _LoginState extends State<Login> {
                   height: 35,
                   child: ElevatedButton(
                     style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    ElevatedButton.styleFrom(backgroundColor: Colors.black12),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const ChangePassword()));

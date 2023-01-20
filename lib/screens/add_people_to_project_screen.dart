@@ -47,6 +47,7 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+
             SizedBox(height: 20),
             Row(
               children: [
@@ -57,9 +58,9 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
                     icon: Icon(Icons.arrow_back))
               ],
             ),
-            SizedBox(
-              height: 240,
-            ),
+            SizedBox(height: 100,),
+            SizedBox(height: 200, width: 400, child: animation),
+
             TextField(
               controller: textController,
               decoration: InputDecoration(
@@ -109,7 +110,6 @@ class _AddPeopleToProjectState extends State<AddPeopleToProject> {
                     Navigator.of(context).pop(widget.project);
                   }),
             ),
-            SizedBox(height: 200, width: 400, child: animation)
           ],
         ),
       ),

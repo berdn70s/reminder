@@ -124,9 +124,11 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.black54,
         title: Text(
           "                Chat Section",
-          style: TextStyle(color: Colors.white60),
+          style: TextStyle(color: Colors.black45),
         ),
       ),
       body: Container(
@@ -155,14 +157,14 @@ class _ChatPageState extends State<ChatPage> {
                                     backgroundColor: ds["senderName"][0] == " " ? Colors.transparent : Colors.black26,
                                     child: Text(ds["senderName"][0])),
                                 SizedBox(
-                                  width:
-                                  MediaQuery.of(context).size.width * 0.9,
-                                  height: 40,
+                                  width: MediaQuery.of(context).size.width * 0.9,
+
+
                                   child: BubbleNormal(
                                     textStyle: ds["senderName"][0] == " " ?TextStyle(color: Colors.black54) :TextStyle(color: Colors.black),
                                     isSender: false,
                                     text: ds["content"],
-                                    color:ds["senderName"][0] == " " ? Colors.grey : Colors.blueGrey,
+                                    color:ds["senderName"][0] == " " ? Colors.grey : Colors.indigo,
                                     tail: ds["senderName"][0] == " " ? false : true,
                                   ),
                                 ),
@@ -180,7 +182,7 @@ class _ChatPageState extends State<ChatPage> {
                                       sent: true,
                                       isSender: true,
                                       text: ds["content"],
-                                      color: Colors.orange,
+                                      color: Colors.amberAccent,
                                       tail: true,
                                     ),
                                   ),
@@ -194,12 +196,13 @@ class _ChatPageState extends State<ChatPage> {
                         },
                       );
                     } else {
-                      return CircularProgressIndicator();
+                      return Center(child: CircularProgressIndicator());
                     }
                   }),
             ),
-            Divider(height: 2.0),
-            textInput
+            Divider(height: 10,),
+            textInput,
+            SizedBox(height: 10,)
           ],
         ),
       ),
