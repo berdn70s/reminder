@@ -266,7 +266,7 @@ class _TaskPageState extends State<TaskPage> {
         actions: [
           TextButton(onPressed:(){
             Navigator.of(context).pop(taskData);
-          }, child: const Text('Submit')),
+          }, child: const Text('EXIT')),
         ],
       )
   );
@@ -386,7 +386,7 @@ class _TaskPageState extends State<TaskPage> {
                           transitionType: TransitionType.BOTTOM_TO_TOP,
                           borderRadius: 60,
                           borderWidth: 2,
-                          text: 'INVITE PEOPLE',
+                          text: 'ADD PEOPLE',
                           textStyle: GoogleFonts.nunito(
                               fontSize: 16,
                               letterSpacing: 1,
