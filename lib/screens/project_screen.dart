@@ -78,12 +78,14 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               SizedBox(
                 width: 54,
               ),
-              IconButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.person_off, color: Colors.black45),
+              Expanded(
+                child: IconButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.person_off, color: Colors.black45),
+                ),
               )
             ],
           ),
